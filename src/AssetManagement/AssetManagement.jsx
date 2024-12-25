@@ -8,6 +8,7 @@ import  LogoutComponent  from './LogoutComponent';
 import  ErrorComponent  from './ErrorComponent';
 import  WelcomeComponent  from './WelcomeComponent';
 import AuthProvider, { useAuth } from './security/AuthContext';
+import CompanyComponent from './CompanyComponent';
 
 
 function AuthenticatedRoute({ children}){
@@ -32,9 +33,20 @@ export default function AssetManagement() {
                     <Route path='/' element={ <LoginComponent /> }></Route>
                     <Route path='/login' element={ <LoginComponent /> }></Route> 
                     
-                        <Route path='/companies' element={ 
+                    <Route path='/companies' element={ 
                             <AuthenticatedRoute>
                                 <ListCompanyComponent /> 
+                            </AuthenticatedRoute>
+                            }></Route> 
+                            <Route path='/company' element={ 
+                            <AuthenticatedRoute>
+                                <CompanyComponent /> 
+                            </AuthenticatedRoute>
+                            }></Route> 
+
+                            <Route path='/company/:id' element={ 
+                            <AuthenticatedRoute>
+                                <CompanyComponent /> 
                             </AuthenticatedRoute>
                             }></Route> 
                         <Route path='/welcome/:username' element={
