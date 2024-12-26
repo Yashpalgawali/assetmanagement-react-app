@@ -1,6 +1,6 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { getCompanyById, saveCompany } from "./api/CompanyApiService";
+import { getCompanyById, saveCompany, updateCompany } from "./api/CompanyApiService";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 
 export default function CompanyComponent(){
@@ -9,15 +9,24 @@ export default function CompanyComponent(){
     const [id , setId] = useState('')
 
     const {paramid} = useParams()
-alert('PARAM ID '+paramid)
+    
     const navigate = useNavigate()
 
-        useEffect(()=>{
-            alert('iside useEffect '+paramid)
-        })
+        useEffect(
+            ()=>
+            retrieveCompanyById(),[paramid]
+        )
 
     function retrieveCompanyById(){
-        getCompanyById(paramid).then(()=> alert('retrieved ID = '+paramid))
+        if(paramid != -1)
+        {
+            getCompanyById(paramid).then((response)=> 
+            {
+                setId(response.data.id)
+                setName(response.data.name)
+            })
+        }
+
     }
 
     function onSubmit(values){
@@ -26,10 +35,19 @@ alert('PARAM ID '+paramid)
             id : id,
             name : name
         }
-        console.log('after sun=bmit '+company)
-        saveCompany(values)
-            .then(()=> navigate('/companies'))
-            .catch(()=> alert('Not saved'))
+        console.log('after submit '+company)
+
+        if(id=== -1){
+            saveCompany(values)
+                .then(()=> navigate('/companies'))
+                .catch(()=> alert('Not saved'))
+        }
+        else {
+            updateCompany(values)
+                .then(()=> navigate('/companies'))
+                .catch(()=> alert('Not saved'))
+        }
+        
     }
 
     function validate(values){

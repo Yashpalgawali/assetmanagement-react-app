@@ -38,13 +38,13 @@ export default function AssetManagement() {
                                 <ListCompanyComponent /> 
                             </AuthenticatedRoute>
                             }></Route> 
-                            <Route path='/company' element={ 
+                            {/* <Route path='/company' element={ 
                             <AuthenticatedRoute>
                                 <CompanyComponent /> 
                             </AuthenticatedRoute>
-                            }></Route> 
+                            }></Route>  */}
 
-                            <Route path='/company/:id' element={ 
+                            <Route path='/company/:paramid' element={ 
                             <AuthenticatedRoute>
                                 <CompanyComponent /> 
                             </AuthenticatedRoute>

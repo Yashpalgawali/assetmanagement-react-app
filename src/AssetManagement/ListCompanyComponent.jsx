@@ -20,9 +20,8 @@ export default function ListCompanyComponent() {
 
      // Fetch company data inside a useEffect hook
      useEffect(() => {
-        
-     //  axios.get('http://localhost:8080/company/')
-     companyurl()
+            
+            companyurl()
                 .then((response) => {
                    
                 // Update the state with the response data
@@ -49,6 +48,10 @@ export default function ListCompanyComponent() {
         navigate(`/company/${id}`)
     }
 
+function addCompany(){
+
+    navigate(`/company/-1`)
+}
     return(
         <div className="container"> 
            <h1>Asset Management  </h1>
@@ -86,6 +89,9 @@ export default function ListCompanyComponent() {
                 </tbody>
 
             </table>
+            <div>
+                <button className="btn btn-success m-3" onClick={addCompany} >Add Company</button>
+            </div>
             </div>
         </div>
     )
