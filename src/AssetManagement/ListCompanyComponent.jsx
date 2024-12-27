@@ -1,8 +1,8 @@
-import axios from "axios"
+
 import { useEffect, useState } from "react"
-import { retrieveHelloWorldBean, retrieveHelloWorldBeanPthVariable } from "./api/HelloWorldAPiService";
+// import { retrieveHelloWorldBean, retrieveHelloWorldBeanPthVariable } from "./api/HelloWorldAPiService";
 import { companyurl } from "./api/CompanyApiService";
-import { useAuth } from "./security/AuthContext";
+// import { useAuth } from "./security/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function ListCompanyComponent() {
@@ -23,7 +23,7 @@ export default function ListCompanyComponent() {
             
             companyurl()
                 .then((response) => {
-                   
+                   console.log(response.data)
                 // Update the state with the response data
                 setCompList(response.data);
             })
@@ -54,7 +54,7 @@ function addCompany(){
 }
     return(
         <div className="container"> 
-           <h1>Asset Management  </h1>
+           <h1>Asset Management </h1>
                 Company List
             <div>
             <table className='table table-striped table-hover '>

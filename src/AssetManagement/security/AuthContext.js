@@ -17,48 +17,54 @@ export default function AuthProvider({ children }) {
     const [username,setUsername] = useState('')
 
     const [token , setToken] = useState(null)
-    // function login(username, password) {
-    //     if(username==='in28minutes' && password==='dummy'){
-    //         setUsername(username)
-    //         setAuthenticated(true)
-    //         return true
-    //     }
-    //     else{
-    //         setAuthenticated(false)
-    //         return false
-    //     }
-    // }
-    async function login(username, password) {
-
-       try{  
-            const response = await createJwtTokenService(username, password)
-                                   
-            if(response.status===200) {
-                const jwtToken = 'Bearer '+response.data.token
-                setToken(jwtToken)
-                setUsername(username)
-                setAuthenticated(true)
-
-                apiClient.interceptors.request.use(
-                    (config)=> {
-                        console.log('Intercepting')
-                        config.headers.Authorization=jwtToken
-                        return config
-                    }
-                )
-                return true
-            }
-            else{
-                logout()
-                return false
-            }
+    function login(username, password) {
+        if(username==='in28minutes' && password==='dummy'){
+            setUsername(username)
+            setAuthenticated(true)
+            return true
         }
-        catch(error)
-        {
-            logout()
+        else{
+            setAuthenticated(false)
             return false
         }
     }
+    // async function login(username, password) {
+
+    //    try{ 
+    //         const object = {
+    //             username : username,
+    //             password : password
+    //         } 
+    //         const batoken = 'Basic '+ btoa(username+':'+password)
+    //         const response = await createJwtTokenService(batoken)
+    //         // const response = await createJwtTokenService(object)
+                                   
+    //         if(response.status===200) {
+    //             const jwtToken = 'Bearer '+response.data.token
+    //             setToken(jwtToken)
+    //             setUsername(username)
+    //             setAuthenticated(true)
+
+    //             apiClient.interceptors.request.use(
+    //                 (config)=> {
+    //                     console.log('Intercepting')
+    //                     config.headers.Authorization= `${jwtToken}`
+    //                     return config
+    //                 }
+    //             )
+    //             return true
+    //         }
+    //         else{
+    //             logout()
+    //             return false
+    //         }
+    //     }
+    //     catch(error)
+    //     {
+    //         logout()
+    //         return false
+    //     }
+    // }
 
     function logout()
     {
