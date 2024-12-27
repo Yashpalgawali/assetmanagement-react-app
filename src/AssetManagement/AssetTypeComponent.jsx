@@ -20,9 +20,7 @@ export default function AssetTypeComponent(){
                 }
         )
     }
-    else{
-        
-    }
+    
 
     function onSubmit(values)
     {

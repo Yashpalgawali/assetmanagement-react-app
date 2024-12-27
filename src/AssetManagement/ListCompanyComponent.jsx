@@ -38,12 +38,6 @@ export default function ListCompanyComponent() {
             console.log(error)
         }
 
-    // const companies = [
-    //                     { id : 1 ,description : 'Auto' },
-    //                     { id : 2 ,description : 'Press' },
-    //                     { id : 3 ,description : 'Tube' }
-    //             ]
-
     function updateCompany(id){
         navigate(`/company/${id}`)
     }
