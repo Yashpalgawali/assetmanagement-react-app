@@ -7,37 +7,61 @@ export default function CompanyComponent(){
 
     const [name ,setName] = useState('')
     const [id , setId] = useState('')
+    const [title , setTitle] = useState('')
 
     const {paramid} = useParams()
     
     const navigate = useNavigate()
 
-        useEffect(
-            ()=>
-            retrieveCompanyById(),[paramid]
-        )
+     useEffect(()=>{
+            if(paramid == -1) {
+                setTitle('Add Company')
+            }
+            else {
+                getCompanyById(paramid)
+                    .then(
+                        (response) => {
+                            setTitle('Update Company')
+                
+                            setId(response.data.id)
+                            setName(response.data.name)
+                        }
+                )
+            }
+        },[title])
 
-    function retrieveCompanyById(){
+        // useEffect(
+        //     ()=>{                
+        //         if(paramid !== -1) {                     
+        //             setTitle('Update Company')
+        //                 getCompanyById(paramid)
+        //                     .then((response)=> 
+        //                     {
+        //                         setId(response.data.id)
+        //                         setName(response.data.name)
+        //                     })                    
+        //         }
+        //         else{
+        //             alert('else part')
+        //             setTitle('Add Company')
+        //         }
+        //     },[paramid]);
+
+    function retrieveCompanyById() {
         if(paramid != -1)
         {
-            getCompanyById(paramid).then((response)=> 
-            {
-                setId(response.data.id)
-                setName(response.data.name)
-            })
+            // getCompanyById(paramid).then((response)=> 
+            // {
+            //     setId(response.data.id)
+            //     setName(response.data.name)
+            // })
         }
 
     }
 
-    function onSubmit(values){
+    function onSubmit(values) {
         
-        const company = {
-            id : id,
-            name : name
-        }
-        console.log('after submit '+company)
-
-        if(id=== -1){
+        if(id === -1){
             saveCompany(values)
                 .then(()=> navigate('/companies'))
                 .catch(()=> alert('Not saved'))
@@ -63,7 +87,7 @@ export default function CompanyComponent(){
 
     return(
         <div className="container">
-            <h1>Enter company details</h1>
+            <h1> {title}</h1>
             <div>
                 <Formik initialValues={ { name , id } }
                                     enableReinitialize = {true}

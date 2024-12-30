@@ -18,20 +18,19 @@ export default function LoginComponent() {
         setUsername(event.target.value)
     }
 
-    function handlePasswordChange(event){
+    function handlePasswordChange(event) {
         setPassword(event.target.value)
     }
 
-    async function handleSubmit(){
+    async function handleSubmit() {
       
         //if(username==='in28minutes' && password==='dummy'){
-        if(await authContext.login(username,password)){
-            
+        if(await authContext.login(username,password)) {            
             navigate(`/welcome/${username}`)
         }
-        else{
-                  setErrorMesage(true)
-           }
+        else {
+            setErrorMesage(true)
+        }
     }
 
     return(
@@ -50,7 +49,7 @@ export default function LoginComponent() {
                     <input type="password" name="password" className='form-control' value={password} onChange={handlePasswordChange} placeholder="Enter Password"/>
                 </div>
                 <div>
-                    <button type="button " className='btn btn-success' onClick={handleSubmit}>Login</button>
+                    <button type="button " className='btn btn-success m-4' onClick={handleSubmit}>Login</button>
                 </div>
             </div>
         </div>

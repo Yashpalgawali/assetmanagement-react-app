@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { getAssetTypeById, saveAssetType, updateAssetType } from "./api/AssetTypeService"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Field, Form, Formik } from "formik"
 
 export default function AssetTypeComponent(){
@@ -9,17 +9,43 @@ export default function AssetTypeComponent(){
     const [type_id , setTypeId] = useState('')
     const  [type_name ,setTypeName] = useState('')
     const navigate = useNavigate()
+    const [title ,setTitle] = useState('')
 
-    if(id!== -1){
+    useEffect(()=>{
+        if(id== -1) {
+            setTitle('Add Asset type')
+        }
+        else {
+            setTitle('Update Asset type')
+            getAssetTypeById(id)
+                .then(
+                    (response) => {
+                        setTypeId(response.data.type_id)
+                        setTypeName(response.data.type_name)
+                    }
+            )
+        }
+    },[title])
+
+//     useEffect(()=>{
          
-        getAssetTypeById(id)
-            .then(
-                (response) => {
-                    setTypeId(response.data.type_id)
-                    setTypeName(response.data.type_name)
-                }
-        )
-    }
+//         if(id === -1) {
+//             setTitle('Add Asset type')
+//             alert('Inside if \n '+title)
+//             // getAssetTypeById(id)
+//             //     .then(
+//             //         (response) => {
+//             //             setTypeId(response.data.type_id)
+//             //             setTypeName(response.data.type_name)
+//             //         }
+//             // )
+//         }
+//         else {
+//             setTitle('Update Asset type')
+//             alert('Inside else \n '+title)
+//         }
+// },[title]);
+    
     
 
     function onSubmit(values)
@@ -56,8 +82,8 @@ export default function AssetTypeComponent(){
 
     return(
          <div className="container">
-            <h3>Add asset type</h3>
-         
+            <h3>{title}</h3>
+          
             <Formik initialValues={ { type_name , type_id } }
                         enableReinitialize = {true}
                         onSubmit={onSubmit}

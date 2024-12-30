@@ -9,7 +9,6 @@ import  ErrorComponent  from './ErrorComponent';
 import  WelcomeComponent  from './WelcomeComponent';
 import AuthProvider, { useAuth } from './security/AuthContext';
 import CompanyComponent from './CompanyComponent';
-import AssetType from './AssetTypeComponent';
 import AssetTypeComponent from './AssetTypeComponent';
 import ListAssetTypeComponent from './ListAssetTypeComponent';
 import DepartmentComponent from './DepartmentComponent';

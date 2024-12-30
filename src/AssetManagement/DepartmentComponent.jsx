@@ -14,6 +14,7 @@ export default function DepartmentComponent() {
     const [comp_name , setCompName] = useState('')
     const [complist ,setCompList] = useState([])
     const [selectedCompany, setSelectedCompany] = useState("");
+    const [title ,setTitle] = useState('')
 
     const handleChange = (event) => {
         alert(event.target.value)
@@ -25,27 +26,33 @@ export default function DepartmentComponent() {
             companyurl().then((response) => {
                 setCompList(response.data)
             })
-        },[]
+            if(id == -1) {
+                
+                setTitle('Add Department')
+            }
+            else {
+                getDepartmentByDeptId(id)
+                    .then((response) => {
+                        setTitle('Update Department')
+                        setDeptId(response.data.dept_id)
+                        setDeptName(response.data.dept_name)
+                        setCompName(response.data.comp_name)
+                    })
+            }
+ 
+        },[complist]
     )
 
-    if(id !== -1)
-    {
-        getDepartmentByDeptId(id)
-            .then((response) => {
-                
-                setDeptId(response.data.dept_id)
-                setDeptName(response.data.dept_name)
-            })
-    }
+    
     return(
         <div className="container">
-            <h2>Department</h2>
+            <h2>{title}</h2>
 
-        <Formik initialValues={ { dept_id,dept_name,comp_id }}
+        <Formik initialValues={ { dept_id,dept_name,comp_id ,comp_name}}
                     enableReinitialize={true}
                     validateOnChange = {false}
                     validateOnBlur = {false}
-        >
+        > 
             {    
                 (props) => (
                     <Form className="form-group">
