@@ -21,43 +21,13 @@ export default function CompanyComponent(){
                 getCompanyById(paramid)
                     .then(
                         (response) => {
-                            setTitle('Update Company')
-                
+                            setTitle('Update Company')                
                             setId(response.data.id)
                             setName(response.data.name)
                         }
                 )
             }
-        },[title])
-
-        // useEffect(
-        //     ()=>{                
-        //         if(paramid !== -1) {                     
-        //             setTitle('Update Company')
-        //                 getCompanyById(paramid)
-        //                     .then((response)=> 
-        //                     {
-        //                         setId(response.data.id)
-        //                         setName(response.data.name)
-        //                     })                    
-        //         }
-        //         else{
-        //             alert('else part')
-        //             setTitle('Add Company')
-        //         }
-        //     },[paramid]);
-
-    function retrieveCompanyById() {
-        if(paramid != -1)
-        {
-            // getCompanyById(paramid).then((response)=> 
-            // {
-            //     setId(response.data.id)
-            //     setName(response.data.name)
-            // })
-        }
-
-    }
+        },[title,paramid])
 
     function onSubmit(values) {
         
@@ -74,11 +44,11 @@ export default function CompanyComponent(){
         
     }
 
-    function validate(values){
+    function validate(values) {
         let errors = {
           //  name : 'Enter valid name'
         }
-        if(values.name.length <5 ){
+        if(values.name.length <5 ) {
             errors.name = 'Enter valid name'
         }
        // console.log(values)

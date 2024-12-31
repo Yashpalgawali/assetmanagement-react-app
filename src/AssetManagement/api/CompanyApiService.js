@@ -2,7 +2,7 @@ import { apiClient } from "./ApiClient";
 
 //export const companyurl  = () => axios.get('http://localhost:8080/company/')
 
-export const companyurl  = () => apiClient.get('company/')
+export const getAllCompaniesApi  = () => apiClient.get('company/')
 
 export const saveCompany = (company) => apiClient.post('company/',company)
 

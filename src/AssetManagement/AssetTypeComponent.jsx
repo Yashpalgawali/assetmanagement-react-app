@@ -25,7 +25,7 @@ export default function AssetTypeComponent(){
                     }
             )
         }
-    },[title])
+    },[title,id])
 
 //     useEffect(()=>{
          

@@ -6,7 +6,7 @@ export default function LoginComponent() {
     const [username, setUsername] = useState('in28minutes')
     const [password, setPassword] = useState('dummy')
 
-    const [successMessage , setSuccessMesage] = useState(false)
+    
     const [errorMessage , setErrorMesage] = useState(false)
 
     const authContext = useAuth()
@@ -35,7 +35,6 @@ export default function LoginComponent() {
 
     return(
         <div className="container">
-            {/* { successMessage && <div className='successMessage'>Authenticated Successfully </div> } */}
             { errorMessage && <div className='errorMessage'>Authentication Failed. PLease Check Your Credentials!!</div> }
 
             <div className="LoginForm">
