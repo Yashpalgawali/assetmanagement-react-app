@@ -1,5 +1,5 @@
 import {Box, Button, TextField, Typography} from "@mui/material";
-import { Form, Formik } from "formik";
+import { ErrorMessage, Form, Formik } from "formik";
 import { useState } from "react";
 
 export default function LoginComponent() {
@@ -11,7 +11,15 @@ export default function LoginComponent() {
         if(username==="admin" && password==="admin"){
             alert('matched')
         }
-        console.log(values)
+        console.log('Submit ',values)
+    }
+
+    function validate(values) {
+        console.log('validation',values)
+        let errors= {
+            username : 'Enter valid username'
+        }
+        return errors
     }
 
     return(
@@ -23,11 +31,13 @@ export default function LoginComponent() {
                 validateOnBlur={false}
                 validateOnChange={false}
                 onSubmit={onSubmit}
+                validate={validate}
             >
              {
                 (props) => (
                     <Form>
                         <Box>
+                            <ErrorMessage name="username" component="div" className="alert alert-danger"/>
                             <TextField
                                 variant="outlined"
                                 type="text" 
@@ -38,8 +48,7 @@ export default function LoginComponent() {
                                 onChange={props.handleChange}
                                 onBlur={props.handleBlur}                                
                             >
-                            </TextField>
-                            
+                            </TextField>                            
                         </Box>
                         <Box>
                          <TextField
@@ -55,7 +64,7 @@ export default function LoginComponent() {
                             </TextField>
                         </Box>
                         <Box>
-                            <Button variant="contained" onClick={onSubmit} color="success">Login Here</Button>
+                            <Button variant="contained" type="submit"  color="success">Login Here</Button>
                         </Box>
                     </Form>
                 )

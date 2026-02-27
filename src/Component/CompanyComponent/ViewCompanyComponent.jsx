@@ -1,17 +1,15 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react" 
+import { getAllCompaniesList } from "../../api/CompanyApiClient"
 
 export default function ViewCompanyComponent() {
 
     const [companyList, setCompanyList] = useState([])
     
     useEffect(()=> {
-        const compList = [
-            { "company_id" : 1,"company_name": "IBM"  },
-            { "company_id" : 2,"company_name": "ISRO"  },
-            { "company_id" : 3,"company_name": "NASA"  }
-        ]
+        getAllCompaniesList().then((response) => {
+            setCompanyList(companyList)
+        })
         
-        setCompanyList(compList)
     },[])
 
     return(
@@ -19,9 +17,9 @@ export default function ViewCompanyComponent() {
         <h1>View Company Component</h1>
         <table className="table table-striped table-hover">
             <thead>
-                <th>Sr</th>
-                <th>Company Name</th>
-                <th>Action</th>
+                <td>Sr</td>
+                <td>Company Name</td>
+                <td>Action</td>
             </thead>
             <tbody>
                 {
