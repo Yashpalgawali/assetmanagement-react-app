@@ -10,12 +10,12 @@ export default function ViewCompanyComponent() {
             setCompanyList(companyList)
         })
         
-    },[])
+    },[companyList])
 
     return(
         <>
         <h1>View Company Component</h1>
-        <table className="table table-striped table-hover">
+        <table className="table table-striped table-hover table-bordered">
             <thead>
                 <td>Sr</td>
                 <td>Company Name</td>

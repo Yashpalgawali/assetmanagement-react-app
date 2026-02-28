@@ -48,6 +48,7 @@ export default function DesignationComponent() {
                             error={props.touched.designation && Boolean(props.errors.designation)}
                             helperText={<ErrorMessage name="designation" />}
                             fullWidth
+                             autoFocus={true}
                         />
                         <Button type="submit" variant="contained" color="success" onClick={onSubmit} >{btnValue}</Button>
                     </Form>

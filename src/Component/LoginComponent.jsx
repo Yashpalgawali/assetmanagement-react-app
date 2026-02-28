@@ -1,30 +1,38 @@
 import {Box, Button, TextField, Typography} from "@mui/material";
 import { ErrorMessage, Form, Formik } from "formik";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginComponent() {
 
     const [username,setUsername] =  useState('')
     const [password,setPassword] =  useState('')
 
+    const navigate = useNavigate()
+
     function onSubmit(values){
-        if(username==="admin" && password==="admin"){
-            alert('matched')
+        if(values.username==="admin" && values.password==="admin"){
+            navigate(`/company/-1`)
         }
         console.log('Submit ',values)
     }
 
     function validate(values) {
         console.log('validation',values)
-        let errors= {
-            username : 'Enter valid username'
+        let errors= { }
+        if(values.username.length==0) {
+            errors.username = "Please Enter Username"
+        }
+
+        if(values.password.length==0) {
+            errors.password = "Please Enter Password"
         }
         return errors
     }
 
     return(
         <div className="container">
-            <Typography variant="h4">Login Here</Typography>
+            <Typography variant="h4">Login Here!!</Typography>
             <Formik
                 enableReinitialize={true}
                 initialValues={{username,password}}
@@ -51,7 +59,7 @@ export default function LoginComponent() {
                             </TextField>                            
                         </Box>
                         <Box>
-                         <TextField
+                        <TextField
                                 variant="outlined"
                                 type="password" 
                                 name="password"

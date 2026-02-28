@@ -9,21 +9,24 @@ import LoginComponent from "./Component/LoginComponent";
 export default function AssetManagement() {
     return(
         <>
-            <BrowserRouter>
+            <BrowserRouter basename="/assetmanagement" >
                 <HeaderComponent />
                 <Routes>
-                    <Route path="/company/-1" element={<CompanyComponent /> }></Route>
+                    <Route path='/company/:id' element={<CompanyComponent /> }></Route>
                 </Routes>
                 <Routes>
-                    <Route path="/viewcompanies" element={ <ViewCompanyComponent />}></Route>
+                    <Route path='/viewcompanies' element={ <ViewCompanyComponent />}></Route>
                 </Routes>
                 <Routes>
-                    <Route path="/designation/-1" element={<DesignationComponent /> }></Route>
+                    <Route path='/designation/:id' element={<DesignationComponent /> }></Route>
                 </Routes>
                 <Routes>
-                    <Route path="/viewdesignations" element={<ViewDesignationComponent /> }></Route>
+                    <Route path='/viewdesignations' element={<ViewDesignationComponent /> }></Route>
                 </Routes>
-              <LoginComponent />
+                 <Routes>
+                    <Route path='/' element={<LoginComponent /> }></Route>
+                </Routes>
+             
             </BrowserRouter>
         </>
     )
