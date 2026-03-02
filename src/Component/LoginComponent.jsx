@@ -2,6 +2,7 @@ import {Box, Button, TextField, Typography} from "@mui/material";
 import { ErrorMessage, Form, Formik } from "formik";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./Security/authContext";
 
 export default function LoginComponent() {
 
@@ -9,16 +10,22 @@ export default function LoginComponent() {
     const [password,setPassword] =  useState('')
 
     const navigate = useNavigate()
+    
+    const authContext = useAuth()
 
-    function onSubmit(values){
-        if(values.username==="admin" && values.password==="admin"){
-            navigate(`/company/-1`)
+    function onSubmit(values) {
+        
+        if(authContext.login(values.username,values.password)) {
+            navigate(`/`)
         }
-        console.log('Submit ',values)
+        else {
+            alert('Username or password didn\'t matched')
+            navigate(`/login`)
+        }
     }
 
     function validate(values) {
-        console.log('validation',values)
+         
         let errors= { }
         if(values.username.length==0) {
             errors.username = "Please Enter Username"
@@ -48,13 +55,14 @@ export default function LoginComponent() {
                             <ErrorMessage name="username" component="div" className="alert alert-danger"/>
                             <TextField
                                 variant="outlined"
-                                type="text" 
+                                type="text"
                                 name="username"
                                 id="username"
                                 placeholder="Enter Username"
                                 value={props.values.username}
                                 onChange={props.handleChange}
-                                onBlur={props.handleBlur}                                
+                                onBlur={props.handleBlur}
+                                autoFocus={true}
                             >
                             </TextField>                            
                         </Box>

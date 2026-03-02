@@ -39,7 +39,7 @@ export default function DesignationComponent() {
                     <Form>
                         <TextField
                             name="designation"
-                            variant="standard"
+                            variant="filled"
                             placeholder="Enter Designation"
                             id="designation"
                             value={props.values.designation}
