@@ -2,30 +2,57 @@
 import {Box, Button, TextField, Typography} from "@mui/material";
 import { ErrorMessage, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getCompanyById, updateCompany } from "../../api/CompanyApiClient";
+import {showToast} from "../SharedComponent/showToast";
 
 export default function CompanyComponent() {
 
     const [comp_name,setCompName] = useState('')
+    const [comp_id,setCompanyId] = useState(-1)
 
-    let btnValue = "Add Company"
+    const [btnValue,setBtnValue] = useState("Add Company")
+    const navigate = useNavigate()
 
     const {id} = useParams()
 
     useEffect(()=>{
        
         if(id != -1) {
-            btnValue= "Update Company"
+            setBtnValue("Update Company")
+            getCompanyById(id).then(response=> {
+                setCompName(response.data.comp_name)
+                setCompanyId(id)
+            })
         }
     },[id])
 
     function saveCompany(values){
-        console.log('Company ',values)
+
         if(id == -1) {
-            alert('save')
+            let companyObject = {                 
+                comp_name : values.comp_name
+            }
+            saveCompany(companyObject).then((response) => {
+                showToast(response.data.successMessage,"success")
+                navigate(`/viewcompanies`)
+            }).catch((error)=>{
+                showToast(error.data.errorMessage,"error")
+                navigate(`/viewcompanies`)
+            })
         }
         else {
-            alert('update')
+            let companyObject = {
+                comp_id : id,
+                comp_name : values.comp_name
+            }
+            updateCompany(companyObject).then((response) => {
+                showToast(response.data.successMessage,"success")
+                navigate(`/viewcompanies`)
+            }).catch((error)=>{
+                showToast(error.data.errorMessage,"error")
+                navigate(`/viewcompanies`)
+            })
         }
 
     }

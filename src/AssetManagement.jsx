@@ -8,6 +8,7 @@ import LoginComponent from "./Component/LoginComponent";
 import ErrorComponent from "./Component/ErrorComponent";
 import AuthProvider, { useAuth } from "./Component/Security/authContext";
 import WelcomeComponent from "./Component/WelcomeComponent";
+import { ToastContainer } from "react-toastify";
 
 
 function AuthenticatedRoute({ children }){
@@ -24,6 +25,7 @@ export default function AssetManagement() {
         <AuthProvider>
             <BrowserRouter basename="/assetmanagement" >
                 <HeaderComponent />
+                 <ToastContainer position="top-center" autoClose={2500} />
                  <Routes>
                 
                     <Route path='/company/:id' element={
