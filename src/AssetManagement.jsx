@@ -24,7 +24,7 @@ export default function AssetManagement() {
         <AuthProvider>
             <BrowserRouter basename="/assetmanagement" >
                 <HeaderComponent />
-                 <Routes>                   
+                 <Routes>
                 
                     <Route path='/company/:id' element={
                             <AuthenticatedRoute>

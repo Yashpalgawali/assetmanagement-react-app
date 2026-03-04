@@ -13,9 +13,9 @@ export default function LoginComponent() {
     
     const authContext = useAuth()
 
-    function onSubmit(values) {
-        
-        if(authContext.login(values.username,values.password)) {
+     async function onSubmit(values) {
+
+        if(await authContext.login(values.username,values.password)) {
             navigate(`/`)
         }
         else {
