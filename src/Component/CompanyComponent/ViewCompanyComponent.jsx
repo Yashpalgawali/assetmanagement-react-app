@@ -13,32 +13,33 @@ export default function ViewCompanyComponent() {
     useEffect(()=> {
         getAllCompaniesList().then((response) => {
             setCompanyList(response.data)
-        })
-        
+        })        
     },[])
+
     function updateCompany(id){
         navigate(`/company/${id}`)
     }
+
     return(
         <div className="container">
-        <h1>View Company Component</h1>
+        <h1>View Company</h1>
         <table className="table table-striped table-hover mt-5 " width="100%">
-            <thead>
-                <th>Sr</th>
-                <th>Company Name</th>
-                <th>Action</th>
-            </thead>
-            <tbody>
-                {
-                    companyList.map((company,index)=>(
-                        <tr key={company.comp_id}>
-                            <td>{index+1}</td>
-                            <td>{company.comp_name}</td>
-                            <td><Button variant="contained" onClick={()=>updateCompany(company.comp_id)}>Update</Button> </td>
-                        </tr>
-                    ))
-                }
-            </tbody>
+        <thead>
+            <th>Sr</th>
+            <th>Company Name</th>
+            <th>Action</th>
+        </thead>
+        <tbody>
+        {
+            companyList.map((company,index)=>(
+                <tr key={company.comp_id}>
+                    <td>{index+1}</td>
+                    <td>{company.comp_name}</td>
+                    <td><Button variant="contained" onClick={()=>updateCompany(company.comp_id)}>Update</Button> </td>
+                </tr>
+            ))
+        }
+        </tbody>
         </table>
        </div>
     )

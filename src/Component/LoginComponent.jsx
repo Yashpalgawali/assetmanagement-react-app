@@ -19,8 +19,7 @@ export default function LoginComponent() {
             navigate(`/`)
         }
         else {
-            alert('Username or password didn\'t matched')
-            navigate(`/login`)
+           navigate(`/login`)
         }
     }
 

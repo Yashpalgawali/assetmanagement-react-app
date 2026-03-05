@@ -9,7 +9,7 @@ export default function ViewDesignationComponent() {
     const navigate = useNavigate()
 
     useEffect(()=>{
-        getAllDesignations().then((response)=>{
+        getAllDesignations().then((response)=> {
             setDesignationList(response.data)
         })
     },[])
@@ -17,10 +17,13 @@ export default function ViewDesignationComponent() {
     function updateDesignation(id) {
         navigate(`/designation/${id}`)
     }
+    function addDesignation() {
+        navigate(`/designation/-1`)
+    }
 
     return(
         <div className="container">
-            <Typography variant="h4">View Designations</Typography>
+            <Typography variant="h4">View Designations <Button variant="contained" style={{ float:"right"}} onClick={addDesignation}>Add Designation</Button> </Typography>
             <table className="table table-striped table-hover">
                  <thead>
                     <th>Sr</th>

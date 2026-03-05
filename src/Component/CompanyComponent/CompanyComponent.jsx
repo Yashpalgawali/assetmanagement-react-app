@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getCompanyById, updateCompany } from "../../api/CompanyApiClient";
 import {showToast} from "../SharedComponent/showToast";
+import { toast } from "react-toastify";
 
 export default function CompanyComponent() {
 
@@ -47,7 +48,8 @@ export default function CompanyComponent() {
                 comp_name : values.comp_name
             }
             updateCompany(companyObject).then((response) => {
-                showToast(response.data.successMessage,"success")
+                toast.success(response.data.statusMessage)
+                
                 navigate(`/viewcompanies`)
             }).catch((error)=>{
                 showToast(error.data.errorMessage,"error")

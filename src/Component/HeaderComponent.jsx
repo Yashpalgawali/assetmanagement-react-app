@@ -34,6 +34,12 @@ export default function HeaderComponent() {
                         {isAuthenticated && <li className="nav-item fs-5">                           
                              <Link className="nav-link" to="/viewdesignations">Designations</Link>
                         </li> }
+                        {isAuthenticated && <li className="nav-item fs-5">                           
+                             <Link className="nav-link" to="/assettype/-1">Add Asset Type</Link>
+                        </li> }
+                        {isAuthenticated && <li className="nav-item fs-5">                           
+                             <Link className="nav-link" to="/viewassettypes">View Asset Types</Link>
+                        </li> }
                         {!isAuthenticated && <li className="nav-item fs-5">                           
                              <Link className="nav-link" to="/login">Login</Link>
                         </li> }

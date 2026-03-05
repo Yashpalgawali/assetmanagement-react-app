@@ -9,6 +9,8 @@ import ErrorComponent from "./Component/ErrorComponent";
 import AuthProvider, { useAuth } from "./Component/Security/authContext";
 import WelcomeComponent from "./Component/WelcomeComponent";
 import { ToastContainer } from "react-toastify";
+import AssetTypeComponent from "./Component/AssetTypeComponent/AssetTypeComponent";
+import ViewAssetTypeComponent from "./Component/AssetTypeComponent/ViewAssetTypeComponent";
 
 
 function AuthenticatedRoute({ children }){
@@ -42,8 +44,15 @@ export default function AssetManagement() {
                           <AuthenticatedRoute>
                             <DesignationComponent /> 
                            </AuthenticatedRoute>
+                        }></Route>                        
+                    <Route path='/assettype/:id' element={
+                          <AuthenticatedRoute>
+                            <AssetTypeComponent /> 
+                           </AuthenticatedRoute>
                         }></Route>
-                
+                 <Route path='/viewassettypes' element={
+                        <AuthenticatedRoute><ViewAssetTypeComponent /> </AuthenticatedRoute> }></Route>
+
                     <Route path='/viewdesignations' element={
                         <AuthenticatedRoute><ViewDesignationComponent /> </AuthenticatedRoute> }></Route>
                 

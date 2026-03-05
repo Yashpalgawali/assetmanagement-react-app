@@ -13,7 +13,7 @@ export const AuthContext = createContext()
 export const useAuth = ()=> useContext(AuthContext) 
 
 export const redirectToLogin= () => {
-  window.location.href = "/trainingtracker/";
+  window.location.href = "/assetmanagement/";
 };
 
 export default function AuthProvider({ children }) {
@@ -46,21 +46,7 @@ export default function AuthProvider({ children }) {
       });
     }
 
-    // const respInterceptor = apiClient.interceptors.response.use(
-    //     (response) => response,
-    //     (error) => {
-           
-    //         if(error.response && error.response.status===401) {
-               
-    //             logout()    
-    //             // 🔑 Hard refresh to login page
-    //             window.location.href = "/trainingtracker/login";
-    //             // 🔑 Prevent the error from bubbling to UI
-    //             return new Promise(() => { sessionStorage.setItem("reserr","You are not Authorized. Please Login to Continue")}); 
-               
-    //         }
-    //         return Promise.reject(error)
-    //     }
+   
 let isRedirecting = false;
 
 const respInterceptor = apiClient.interceptors.response.use(
@@ -108,47 +94,6 @@ const respInterceptor = apiClient.interceptors.response.use(
       };
   }, []);
 
-    // function login(username,password) {
-    //         if(username=="admin" && password=="admin"){
-    //                 setAuthenticated(true)
-    //                 sessionStorage.setItem('isAuthenticated',true)
-    //                 localStorage.setItem(isAuthenticated,true)
-    //                 return true
-    //         }
-    //         else {
-    //                 setAuthenticated(false)
-    //                 localStorage.setItem('isAuthenticated',false)
-    //                 sessionStorage.setItem('isAuthenticated',false)
-    //                 return false
-    //         }
-    // }
-
-    // async function login(username,password) {
-    //     const batoken = 'Basic '+ window.btoa(username+':'+password)
-        
-    //     try{
-    //         const response = await executeJwtAuthentication(username,password) 
-    //         if(response.status==200){
-    //                 setAuthenticated(true)
-    //                 setToken(batoken)
-    //                 sessionStorage.setItem('isAuthenticated',true)
-    //                 localStorage.setItem(isAuthenticated,true)
-    //                 return true
-    //         }
-    //         else {
-    //                 setAuthenticated(false)
-    //                 setToken(null)
-    //                 localStorage.setItem('isAuthenticated',false)
-    //                 sessionStorage.setItem('isAuthenticated',false)
-    //                 return false
-    //         }
-    //     }
-    //     catch(error) {
-    //         logout()           
-    //         return false
-    //     }
-    // }
-
     async function login(username,password) {
        
         try{ 
@@ -189,7 +134,13 @@ const respInterceptor = apiClient.interceptors.response.use(
            // 🚨 Wrong password or unauthorized
             if (error.response && error.response.status === 401) {
               showToast(error.response.data.message || "Invalid username or password","error");
-              logout()
+               setAuthenticated(false)
+                setUserId('')
+                setJwtToken(null)
+                setUsername('')
+
+                sessionStorage.clear()
+                localStorage.clear()
             }
             // 🚨 Backend down
             else {
