@@ -45,6 +45,14 @@ export default function AssetTypeComponent(){
         }
     }
 
+    function validate(values) {
+        let errors = {}
+        if(!values.type_name) {
+            errors.type_name = 'Please enter Asset Type'
+        }     
+        return errors
+    }
+
     return (
 
         <div className="container">
@@ -56,6 +64,7 @@ export default function AssetTypeComponent(){
                 validateOnBlur={false}
                 validateOnChange={false}
                 onSubmit={saveAssetType}
+                validate={validate}
             >
              {
                 (props) => (
