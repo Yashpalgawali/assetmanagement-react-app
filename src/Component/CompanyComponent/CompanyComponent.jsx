@@ -16,7 +16,7 @@ export default function CompanyComponent() {
     const navigate = useNavigate()
 
     const {id} = useParams()
-
+  
     useEffect(()=>{
        
         if(id != -1) {
