@@ -48,9 +48,7 @@ export default function AssetTypeComponent(){
     return (
 
         <div className="container">
-            <Typography variant="h4" gutterBottom>
-                {id == -1 ? 'Add Asset Type' : 'Edit Asset Type'}
-            </Typography>
+            <Typography variant="h4" gutterBottom> {id == -1 ? 'Add Asset Type' : 'Edit Asset Type'} </Typography>
            
             <Formik
                 initialValues={{ type_name , type_id  }}
@@ -58,7 +56,6 @@ export default function AssetTypeComponent(){
                 validateOnBlur={false}
                 validateOnChange={false}
                 onSubmit={saveAssetType}
-
             >
              {
                 (props) => (
