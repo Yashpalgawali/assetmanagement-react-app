@@ -40,6 +40,12 @@ export default function HeaderComponent() {
                         {isAuthenticated && <li className="nav-item fs-5">                           
                              <Link className="nav-link" to="/viewassettypes">View Asset Types</Link>
                         </li> }
+                         {isAuthenticated && <li className="nav-item fs-5">                           
+                             <Link className="nav-link" to="/asset/-1">Add Asset </Link>
+                        </li> }
+                         {isAuthenticated && <li className="nav-item fs-5">                           
+                             <Link className="nav-link" to="/viewassets">View Assets </Link>
+                        </li> }
                         {!isAuthenticated && <li className="nav-item fs-5">                           
                              <Link className="nav-link" to="/login">Login</Link>
                         </li> }
