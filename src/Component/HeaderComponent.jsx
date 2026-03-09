@@ -21,33 +21,29 @@ export default function HeaderComponent() {
                     {/* <a className="navbar-brand ms-2 fs-2 fw-bold text-black" href="https://www.in28minutes.com">in28minutes</a> */}
                     <div className="collapse navbar-collapse">
                         <ul className="navbar-nav">
-                        
-                       {isAuthenticated &&  <li className="nav-item fs-5">                           
-                             <Link className="nav-link" to="/company/-1">Add Company</Link>
-                        </li> }
+                         
                         {isAuthenticated && <li className="nav-item fs-5">                          
                              <Link className="nav-link" to="/viewcompanies">Companies</Link>
                         </li> }
-                        {isAuthenticated && <li className="nav-item fs-5">                           
-                             <Link className="nav-link" to="/designation/-1">Add Designation</Link>
-                        </li> }
+                        
                         {isAuthenticated && <li className="nav-item fs-5">                           
                              <Link className="nav-link" to="/viewdesignations">Designations</Link>
                         </li> }
-                        {isAuthenticated && <li className="nav-item fs-5">                           
-                             <Link className="nav-link" to="/assettype/-1">Add Asset Type</Link>
-                        </li> }
+                        
                         {isAuthenticated && <li className="nav-item fs-5">                           
                              <Link className="nav-link" to="/viewassettypes">View Asset Types</Link>
                         </li> }
-                         {isAuthenticated && <li className="nav-item fs-5">                           
-                             <Link className="nav-link" to="/asset/-1">Add Asset </Link>
-                        </li> }
+                        
                          {isAuthenticated && <li className="nav-item fs-5">                           
                              <Link className="nav-link" to="/viewassets">View Assets </Link>
                         </li> }
-                          {isAuthenticated && <li className="nav-item fs-5">                           
+                        
+                         {isAuthenticated && <li className="nav-item fs-5">                           
                              <Link className="nav-link" to="/viewdepartments">View Departments </Link>
+                        </li> }
+
+                         {isAuthenticated && <li className="nav-item fs-5">                           
+                             <Link className="nav-link" to="/viewemployees">View Employees </Link>
                         </li> }
                         {!isAuthenticated && <li className="nav-item fs-5">                           
                              <Link className="nav-link" to="/login">Login</Link>

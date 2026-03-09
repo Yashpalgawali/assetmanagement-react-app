@@ -52,28 +52,27 @@ export default function AssetComponent() {
           type_id: values.atype
         })
         const assetData = { asset_name : values.asset_name , asset_id: values.asset_id, model_number: values.model_number, asset_number: values.asset_number, quantity: values.quantity, atype: values.atype };
-        
-        console.log('Asset Object ',assetData);
-        // if(id == -1) {
-        //     saveAsset(assetData).then((response) => {
-        //         console.log('Asset Added ', response.data)
-        //         toast.success(response.data.statusMsg)
-        //         navigate('/viewassets')
-        //     }).catch((error) => {
-        //         toast.error(error.data.errorMsg)
-        //         navigate('/viewassets')
-        //     })
-        // }
-        // else {
-        //     updateAsset(assetData).then((response) => {
-        //         console.log('Asset Updated ', response.data)
-        //         toast.success(response.data.statusMsg)
-        //         navigate('/viewassets')
-        //     }).catch((error) => {
-        //         toast.error(error.data.errorMsg)
-        //         navigate('/viewassets')
-        //     })
-        // }
+             
+        if(id == -1) {
+            saveAsset(assetData).then((response) => {
+                console.log('Asset Added ', response.data)
+                toast.success(response.data.statusMsg)
+                navigate('/viewassets')
+            }).catch((error) => {
+                toast.error(error.data.errorMsg)
+                navigate('/viewassets')
+            })
+        }
+        else {
+            updateAsset(assetData).then((response) => {
+                console.log('Asset Updated ', response.data)
+                toast.success(response.data.statusMsg)
+                navigate('/viewassets')
+            }).catch((error) => {
+                toast.error(error.data.errorMsg)
+                navigate('/viewassets')
+            })
+        }
     }
 
   return (
