@@ -13,6 +13,8 @@ import AssetTypeComponent from "./Component/AssetTypeComponent/AssetTypeComponen
 import ViewAssetTypeComponent from "./Component/AssetTypeComponent/ViewAssetTypeComponent";
 import AssetComponent from "./Component/AssetComponent/AssetComponent";
 import ViewAssetsComponent from "./Component/AssetComponent/ViewAssetsComponent";
+import DepartmentComponent from "./Component/DepartmentComponent/DepartmentComponent";
+import ViewDepartmentComponent from "./Component/DepartmentComponent/ViewDepartmentComponent";
 
 
 function AuthenticatedRoute({ children }){
@@ -63,6 +65,16 @@ export default function AssetManagement() {
 
                    <Route path='/viewassets' element={
                         <AuthenticatedRoute><ViewAssetsComponent /> </AuthenticatedRoute> }>
+                    </Route>
+
+                     <Route path='/department/:id' element={
+                          <AuthenticatedRoute>
+                            <DepartmentComponent />
+                           </AuthenticatedRoute>
+                        }></Route>
+
+                   <Route path='/viewdepartments' element={
+                        <AuthenticatedRoute><ViewDepartmentComponent /> </AuthenticatedRoute> }>
                     </Route>
                  
                     <Route path='/viewdesignations' element={
