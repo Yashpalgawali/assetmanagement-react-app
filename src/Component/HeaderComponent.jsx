@@ -34,7 +34,7 @@ export default function HeaderComponent() {
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     {/* <a className="navbar-brand ms-2 fs-2 fw-bold text-black" href="https://www.in28minutes.com">in28minutes</a> */}
-                    <div className="collapse navbar-collapse">
+                    <div className="collapse navbar-collapse" id="navbarMenu">
                         <ul className="navbar-nav">
                          
                         {isAuthenticated && <li className="nav-item fs-5">                          

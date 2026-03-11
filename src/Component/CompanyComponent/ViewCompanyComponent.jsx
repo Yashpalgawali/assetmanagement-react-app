@@ -22,7 +22,7 @@ export default function ViewCompanyComponent() {
 
     return(
         <div className="container">
-        <Typography variant="h4" gutterBottom >View Companies <Button variant="contained" color="secondary" onClick={()=>updateCompany(-1)}>Add Company</Button> </Typography>
+        <Typography variant="h4" gutterBottom >View Companies <Button variant="contained" style={{float : 'right'}} color="primary" onClick={()=>updateCompany(-1)}>Add Company</Button> </Typography>
         <table className="table table-striped table-hover mt-5 " width="100%">
         <thead>
             <tr>
