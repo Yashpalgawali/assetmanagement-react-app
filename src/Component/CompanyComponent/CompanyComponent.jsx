@@ -1,11 +1,12 @@
 
-import {Box, Button, TextField, Typography} from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { ErrorMessage, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getCompanyById, updateCompany } from "../../api/CompanyApiClient";
 import {showToast} from "../SharedComponent/showToast";
 import { toast } from "react-toastify";
+import DashboardLayout from "../Layout/DashboardLayout";
 
 export default function CompanyComponent() {
 
@@ -48,8 +49,7 @@ export default function CompanyComponent() {
                 comp_name : values.comp_name
             }
             updateCompany(companyObject).then((response) => {
-                toast.success(response.data.statusMessage)
-                
+                toast.success(response.data.statusMessage)                
                 navigate(`/viewcompanies`)
             }).catch((error)=>{
                 showToast(error.data.errorMessage,"error")
@@ -69,6 +69,7 @@ export default function CompanyComponent() {
 
     return(
         <div className="container">
+             <DashboardLayout >
             <Typography variant="h4">{btnValue}</Typography>
             <Formik
                 initialValues={{ comp_name}}
@@ -104,6 +105,7 @@ export default function CompanyComponent() {
                     )
                 }
             </Formik>
+            </DashboardLayout>
         </div> 
     )
 }

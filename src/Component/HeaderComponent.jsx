@@ -13,11 +13,26 @@ export default function HeaderComponent() {
     }
 
     return(
-        <>
+        
         <header className="border-bottom border-light border-5 p-2 ">
-        <div className="container-fluid">
+        <div className="container-fluid"
+            style={{ marginLeft: "240px" }}
+        >
             <div className="row">
                 <nav className="navbar navbar-expand-lg">
+                    {/* Toggle Button */}
+
+                    <button
+                        className="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarMenu"
+                        aria-controls="navbarMenu"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                        >
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
                     {/* <a className="navbar-brand ms-2 fs-2 fw-bold text-black" href="https://www.in28minutes.com">in28minutes</a> */}
                     <div className="collapse navbar-collapse">
                         <ul className="navbar-nav">
@@ -57,6 +72,6 @@ export default function HeaderComponent() {
             </div>
         </div>
     </header>
-        </>
+       
     )
 }

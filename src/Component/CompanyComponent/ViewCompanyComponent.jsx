@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react" 
 import { getAllCompaniesList } from "../../api/CompanyApiClient"
 
-import {Button} from "@mui/material";
+import {Button, Typography} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export default function ViewCompanyComponent() {
@@ -22,12 +22,14 @@ export default function ViewCompanyComponent() {
 
     return(
         <div className="container">
-        <h1>View Company</h1>
+        <Typography variant="h4" gutterBottom >View Companies <Button variant="contained" color="secondary" onClick={()=>updateCompany(-1)}>Add Company</Button> </Typography>
         <table className="table table-striped table-hover mt-5 " width="100%">
         <thead>
-            <th>Sr</th>
-            <th>Company Name</th>
-            <th>Action</th>
+            <tr>
+                <th>Sr</th>
+                <th>Company Name</th>
+                <th>Action</th>
+            </tr>
         </thead>
         <tbody>
         {

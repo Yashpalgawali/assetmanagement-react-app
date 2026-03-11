@@ -17,6 +17,7 @@ import DepartmentComponent from "./Component/DepartmentComponent/DepartmentCompo
 import ViewDepartmentComponent from "./Component/DepartmentComponent/ViewDepartmentComponent";
 import ViewEmployeeComponent from "./Component/EmployeeComponent/ViewEmployeeComponent";
 import EmployeeComponent from "./Component/EmployeeComponent/EmployeeComponent";
+import DashboardLayout from "./Component/Layout/DashboardLayout";
 
 
 
@@ -34,8 +35,9 @@ export default function AssetManagement() {
         <AuthProvider>
             <BrowserRouter basename="/assetmanagement" >
                 <HeaderComponent />
-                 <ToastContainer position="top-center" autoClose={2500} />
+                 <ToastContainer position="top-center" autoClose={3000} />
                  <Routes>
+                    <Route path="/dashboard" element={<DashboardLayout />} />
                 
                     <Route path='/company/:id' element={
                             <AuthenticatedRoute>
