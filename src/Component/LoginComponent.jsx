@@ -1,7 +1,7 @@
 import {Box, Button, Divider, Grid, IconButton, InputAdornment, TextField, Paper, Typography} from "@mui/material";
 import { ErrorMessage, Form, Formik } from "formik";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./Security/authContext";
 
 
@@ -21,7 +21,7 @@ export default function LoginComponent() {
     const authContext = useAuth()
 
      async function onSubmit(values) {
-        alert('called')
+       
         if(await authContext.login(values.username,values.password)) {
             navigate(`/`)
         }
@@ -125,7 +125,7 @@ export default function LoginComponent() {
                 <ErrorMessage name="username" component="div" className="alert alert-danger"/>
               <TextField
                 fullWidth
-                label="username"
+                label="Username"
                 id="username"
                 placeholder="Username"
                 onChange={props.handleChange}
@@ -155,16 +155,17 @@ export default function LoginComponent() {
                 type={showPassword ? "text" : "password"}
                 margin="normal"
                 required
+                autoComplete="new-password"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <LockIcon />
                     </InputAdornment>
                   ),
-
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
+                        edge="end"
                         onClick={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
@@ -173,7 +174,17 @@ export default function LoginComponent() {
                   )
                 }}
               />
+{/* Forgot Password */}
 
+{/* <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+  <Link
+    href="/forgot-password"
+    underline="hover"
+    sx={{ fontSize: 14 }}
+  >
+    Forgot password?
+  </Link>
+</Box> */}
               {/* LOGIN BUTTON */}
 
               <Button
