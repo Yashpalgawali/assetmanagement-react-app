@@ -18,7 +18,7 @@ export default function ViewAssetTypeComponent() {
     }
     return (
         <div className="container">
-            <Typography variant="h4" gutterBottom> View Asset Types </Typography>
+            <Typography variant="h4" gutterBottom> View Asset Types <Button variant="contained" style={{float : 'right'}} onClick={()=>navigate(`/assettype/-1`)}>Add Asset Type</Button> </Typography>
             
             <table className="table table-striped table-hover">
                 <thead>

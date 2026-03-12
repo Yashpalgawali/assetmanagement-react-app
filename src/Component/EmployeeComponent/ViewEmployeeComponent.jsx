@@ -20,7 +20,7 @@ export default function ViewEmployeeComponent() {
     return(
         <div className="container">
             <Typography variant="h4" gutterBottom>
-                View Employees  <Button variant="contained" color="primary" onClick={() => navigate(`/employee/-1`)}>Add Employee</Button>
+                View Employees  <Button variant="contained" color="primary" style={{float : 'right'}} onClick={() => navigate(`/employee/-1`)}>Add Employee</Button>
             </Typography>
             <table className="table table-striped table-hover">
                 <thead>

@@ -45,19 +45,47 @@ function DashboardLayout({ children }) {
           <ListItemText primary="Dashboard"  ></ListItemText>
         </ListItemButton>
 
-        <ListItem button>
+         <ListItemButton button onClick={()=>navigate(`/viewcompanies`)}>
           <ListItemIcon>
             {/* <BusinessIcon /> */}
           </ListItemIcon>
           <ListItemText primary="Company" />
-        </ListItem>
+        </ListItemButton>
 
-        <ListItem button>
+        <ListItemButton button onClick={()=>navigate(`/viewcompanies`)}>
+          <ListItemIcon>
+            {/* <DevicesIcon /> */}
+          </ListItemIcon>
+          <ListItemText primary="Department" />
+        </ListItemButton>
+
+        <ListItemButton button onClick={()=>navigate(`/viewassettypes`)}>
+          <ListItemIcon>
+            {/* <DevicesIcon /> */}
+          </ListItemIcon>
+          <ListItemText primary="Asset Type" />
+        </ListItemButton>
+
+        <ListItemButton button onClick={()=>navigate(`/viewassets`)}>
           <ListItemIcon>
             {/* <DevicesIcon /> */}
           </ListItemIcon>
           <ListItemText primary="Assets" />
-        </ListItem>
+        </ListItemButton>
+
+        <ListItemButton button onClick={()=>navigate(`/viewdesignations`)}>
+          <ListItemIcon>
+            {/* <DevicesIcon /> */}
+          </ListItemIcon>
+          <ListItemText primary="Designation" />
+        </ListItemButton>
+
+         <ListItemButton button onClick={()=>navigate(`/viewemployees`)}>
+          <ListItemIcon>
+            {/* <DevicesIcon /> */}
+          </ListItemIcon>
+          <ListItemText primary="Employees" />
+        </ListItemButton>
 
       </List>
     </div>

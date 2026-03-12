@@ -36,74 +36,86 @@ export default function AssetManagement() {
         <AuthProvider>
             <BrowserRouter basename="/assetmanagement" >
                 <HeaderComponent />
-                <DashboardLayout>
+                
                  <ToastContainer position="top-center" autoClose={3000} />
                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/" element={
+                        <DashboardLayout><Dashboard /></DashboardLayout>} />
                 
                     <Route path='/company/:id' element={
                             <AuthenticatedRoute>
+                                <DashboardLayout>
                                 <CompanyComponent />
+                                </DashboardLayout>
                             </AuthenticatedRoute> }></Route>
                 
                     <Route path='/viewcompanies' element={ 
                           <AuthenticatedRoute>
+                            <DashboardLayout>
                             <ViewCompanyComponent />
+                            </DashboardLayout>
                          </AuthenticatedRoute> }></Route>
                 
                     <Route path='/designation/:id' element={
                           <AuthenticatedRoute>
+                            <DashboardLayout>
                             <DesignationComponent /> 
+                            </DashboardLayout>
                            </AuthenticatedRoute>
                         }></Route>                        
                     <Route path='/assettype/:id' element={
                           <AuthenticatedRoute>
+                            <DashboardLayout>
                             <AssetTypeComponent /> 
+                            </DashboardLayout>
                            </AuthenticatedRoute>
                         }></Route>
                     <Route path='/viewassettypes' element={
-                        <AuthenticatedRoute><ViewAssetTypeComponent /> </AuthenticatedRoute> }></Route>
+                        <AuthenticatedRoute><DashboardLayout><ViewAssetTypeComponent /></DashboardLayout> </AuthenticatedRoute> }></Route>
                 
                     <Route path='/asset/:id' element={
                           <AuthenticatedRoute>
+                            <DashboardLayout>
                             <AssetComponent />
+                            </DashboardLayout>
                            </AuthenticatedRoute>
                         }></Route>
 
                    <Route path='/viewassets' element={
-                        <AuthenticatedRoute><ViewAssetsComponent /> </AuthenticatedRoute> }>
+                        <AuthenticatedRoute><DashboardLayout><ViewAssetsComponent /></DashboardLayout> </AuthenticatedRoute> }>
                     </Route>
 
                      <Route path='/department/:id' element={
                           <AuthenticatedRoute>
+                            <DashboardLayout>
                             <DepartmentComponent />
+                            </DashboardLayout>
                            </AuthenticatedRoute>
                         }></Route>
 
                    <Route path='/viewdepartments' element={
-                        <AuthenticatedRoute><ViewDepartmentComponent /> </AuthenticatedRoute> }>
+                        <AuthenticatedRoute><DashboardLayout><ViewDepartmentComponent /> </DashboardLayout></AuthenticatedRoute> }>
                     </Route>
 
                      <Route path='/employee/:id' element={
                           <AuthenticatedRoute>
+                            <DashboardLayout>
                             <EmployeeComponent />
+                            </DashboardLayout>
                            </AuthenticatedRoute>
                         }></Route>
 
                    <Route path='/viewemployees' element={
-                        <AuthenticatedRoute><ViewEmployeeComponent /> </AuthenticatedRoute> }>
+                        <AuthenticatedRoute><DashboardLayout><ViewEmployeeComponent /></DashboardLayout> </AuthenticatedRoute> }>
                     </Route>
                  
                     <Route path='/viewdesignations' element={
-                        <AuthenticatedRoute><ViewDesignationComponent /> </AuthenticatedRoute> }></Route>
-                
-                    <Route path='/' element={
-                        <AuthenticatedRoute><WelcomeComponent /> </AuthenticatedRoute> }></Route>
+                        <AuthenticatedRoute><DashboardLayout><ViewDesignationComponent /></DashboardLayout> </AuthenticatedRoute> }></Route>
                 
                     <Route path='/login' element={<LoginComponent /> }></Route>
                     <Route path='*' element={<ErrorComponent /> }></Route>
                 </Routes>
-             </DashboardLayout>
+             
             </BrowserRouter>
             </AuthProvider>
         </>

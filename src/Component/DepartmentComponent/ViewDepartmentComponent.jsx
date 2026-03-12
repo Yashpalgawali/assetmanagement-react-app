@@ -20,7 +20,7 @@ export default function ViewDepartmentComponent() {
     return(
         <div className="container">
             <Typography variant="h4" gutterBottom>
-                View Departments <Button variant="contained" onClick={()=>navigate('/department/-1')} >Add Department</Button>   
+                View Departments <Button variant="contained" onClick={()=>navigate('/department/-1')} style={{float : 'right'}} >Add Department</Button>   
             </Typography>
             <table className="table table-hover table-striped">
                 <thead>

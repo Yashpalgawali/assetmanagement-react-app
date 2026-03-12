@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { getAllAssets } from "../../api/AssetApiClient"
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export default function ViewAssetsComponent() {
@@ -17,7 +17,7 @@ export default function ViewAssetsComponent() {
 
     return(
         <div className="container">
-            <h1>View Assets</h1>
+            <Typography variant="h4" gutterBottom>View Assets <Button variant="contained" style={{float : 'right'}} onClick={()=>navigate(`/assettype/-1`)}>Add Asset </Button> </Typography>
             <table className="table table-hover table-striped">
                 <thead>
                     <th>Sr</th>
