@@ -16,16 +16,27 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-// import MenuIcon from "@mui/icons-material/Menu";
-// import DashboardIcon from "@mui/icons-material/Dashboard";
-// import BusinessIcon from '@mui/icons-material/Business';
-// import DevicesIcon from "@mui/icons-material/Devices";
+import LogoutIcon from '@mui/icons-material/Logout';
+import DevicesIcon from "@mui/icons-material/Devices";
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import BusinessIcon from '@mui/icons-material/Business';
+import Groups3Icon from '@mui/icons-material/Groups3';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import { useAuth } from "../Security/authContext";
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 function DashboardLayout({ children }) {
 
   const [mobileOpen, setMobileOpen] = useState(false);
+  const authContext = useAuth()
+  
+      const isAuthenticated = authContext.isAuthenticated
+      
+      function logout()
+      {
+          authContext.logout()        
+      }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -40,21 +51,21 @@ function DashboardLayout({ children }) {
 
         <ListItemButton button onClick={()=>navigate(`/`)}>
           <ListItemIcon>
-            {/* <DashboardIcon /> */}
+           <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Dashboard"  ></ListItemText>
         </ListItemButton>
 
          <ListItemButton button onClick={()=>navigate(`/viewcompanies`)}>
           <ListItemIcon>
-            {/* <BusinessIcon /> */}
+            <BusinessIcon />
           </ListItemIcon>
           <ListItemText primary="Company" />
         </ListItemButton>
 
-        <ListItemButton button onClick={()=>navigate(`/viewcompanies`)}>
+        <ListItemButton button onClick={()=>navigate(`/viewdepartments`)}>
           <ListItemIcon>
-            {/* <DevicesIcon /> */}
+          <CorporateFareIcon />
           </ListItemIcon>
           <ListItemText primary="Department" />
         </ListItemButton>
@@ -68,7 +79,7 @@ function DashboardLayout({ children }) {
 
         <ListItemButton button onClick={()=>navigate(`/viewassets`)}>
           <ListItemIcon>
-            {/* <DevicesIcon /> */}
+             <DevicesIcon />
           </ListItemIcon>
           <ListItemText primary="Assets" />
         </ListItemButton>
@@ -82,9 +93,16 @@ function DashboardLayout({ children }) {
 
          <ListItemButton button onClick={()=>navigate(`/viewemployees`)}>
           <ListItemIcon>
-            {/* <DevicesIcon /> */}
+            <Groups3Icon />
           </ListItemIcon>
           <ListItemText primary="Employees" />
+        </ListItemButton>
+
+        <ListItemButton button onClick={logout}>
+          <ListItemIcon>            
+            <LogoutIcon />
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
         </ListItemButton>
 
       </List>
@@ -103,7 +121,7 @@ function DashboardLayout({ children }) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-          marginTop: '60px'
+         
         }}
       >
         <Toolbar>

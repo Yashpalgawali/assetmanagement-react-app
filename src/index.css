@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 code {
@@ -13,5 +14,5 @@ code {
 }
 
 .container {
-  margin-top: 50px;
+  /* margin-top: 0px; */
 } 

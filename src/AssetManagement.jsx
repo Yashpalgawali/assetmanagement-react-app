@@ -35,12 +35,17 @@ export default function AssetManagement() {
         <>
         <AuthProvider>
             <BrowserRouter basename="/assetmanagement" >
-                <HeaderComponent />
+                {/* <HeaderComponent /> */}
                 
                  <ToastContainer position="top-center" autoClose={3000} />
                  <Routes>
-                    <Route path="/" element={
-                        <DashboardLayout><Dashboard /></DashboardLayout>} />
+                    <Route path="/" element= {
+                          <AuthenticatedRoute>
+                        <DashboardLayout>
+                            <Dashboard /></DashboardLayout>
+                       </AuthenticatedRoute>
+                            }
+                    />
                 
                     <Route path='/company/:id' element={
                             <AuthenticatedRoute>
