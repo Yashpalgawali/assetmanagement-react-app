@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DevicesIcon from "@mui/icons-material/Devices";
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -132,7 +133,7 @@ function DashboardLayout({ children }) {
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: "none" } }}
           >
-             
+            <MenuIcon /> 
           </IconButton>
 
           <Typography variant="h6" noWrap>

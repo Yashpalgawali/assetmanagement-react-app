@@ -3,7 +3,7 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import { ErrorMessage, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getCompanyById, updateCompany } from "../../api/CompanyApiClient";
+import { getAllCompaniesList, getCompanyById, updateCompany } from "../../api/CompanyApiClient";
 import {showToast} from "../SharedComponent/showToast";
 import { toast } from "react-toastify";
 import DashboardLayout from "../Layout/DashboardLayout";
@@ -12,6 +12,8 @@ export default function CompanyComponent() {
 
     const [comp_name,setCompName] = useState('')
     const [comp_id,setCompanyId] = useState(-1)
+
+    const [companyList, setCompanyList] = useState([])
 
     const [btnValue,setBtnValue] = useState("Add Company")
     const navigate = useNavigate()
@@ -28,6 +30,13 @@ export default function CompanyComponent() {
             })
         }
     },[id])
+ 
+    
+     useEffect(()=> {
+        getAllCompaniesList().then((response) => {
+            setCompanyList(response.data)
+        })        
+    },[])
 
     function saveCompany(values){
 
@@ -36,10 +45,10 @@ export default function CompanyComponent() {
                 comp_name : values.comp_name
             }
             saveCompany(companyObject).then((response) => {
-                showToast(response.data.successMessage,"success")
+                toast.success(response.data.successMessage)
                 navigate(`/viewcompanies`)
             }).catch((error)=>{
-                showToast(error.data.errorMessage,"error")
+                toast.error(error.data.errorMessage)
                 navigate(`/viewcompanies`)
             })
         }
@@ -52,11 +61,10 @@ export default function CompanyComponent() {
                 toast.success(response.data.statusMessage)                
                 navigate(`/viewcompanies`)
             }).catch((error)=>{
-                showToast(error.data.errorMessage,"error")
+                toast.error(error.data.errorMessage)
                 navigate(`/viewcompanies`)
             })
         }
-
     }
 
     function validate(values) {
@@ -68,8 +76,8 @@ export default function CompanyComponent() {
     }
 
     return(
-        <div className="container">
-             <DashboardLayout >
+        <Box>
+             
             <Typography variant="h4">{btnValue}</Typography>
             <Formik
                 initialValues={{ comp_name}}
@@ -105,7 +113,30 @@ export default function CompanyComponent() {
                     )
                 }
             </Formik>
-            </DashboardLayout>
-        </div> 
+             
+             <Box>
+                     <Typography variant="h4" gutterBottom >View Companies <Button variant="contained" style={{float : 'right'}} color="primary" onClick={()=>navigate(`/company/-1`)}>Add Company</Button> </Typography>
+                     <table className="table table-striped table-hover mt-5 " width="100%">
+                     <thead>
+                         <tr>
+                             <th>Sr</th>
+                             <th>Company Name</th>
+                             <th>Action</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                     {
+                         companyList.map((company,index)=>(
+                             <tr key={company.comp_id}>
+                                 <td>{index+1}</td>
+                                 <td>{company.comp_name}</td>
+                                 <td><Button variant="contained" onClick={()=>navigate(`/company/${company.comp_id}`)}>Update</Button> </td>
+                             </tr>
+                         ))
+                     }
+                     </tbody>
+                </table>
+            </Box>
+        </Box> 
     )
 }

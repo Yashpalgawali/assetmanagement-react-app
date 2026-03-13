@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./Security/authContext";
 
-
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import LockIcon from '@mui/icons-material/Lock';
@@ -14,7 +13,7 @@ export default function LoginComponent() {
 
     const [username,setUsername] =  useState('')
     const [password,setPassword] =  useState('')
-  const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate()
     
@@ -133,7 +132,7 @@ export default function LoginComponent() {
                 autoFocus={true}
                 margin="normal"
                 required
-                InputProps={{
+                slotProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       {/* <EmailIcon /> */}
@@ -156,7 +155,7 @@ export default function LoginComponent() {
                 margin="normal"
                 required
                 autoComplete="new-password"
-                InputProps={{
+                slotProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <LockIcon />
