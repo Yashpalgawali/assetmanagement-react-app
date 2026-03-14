@@ -1,13 +1,19 @@
+import $ from 'jquery'; // jQuery is required for DataTables to work
+import 'datatables.net-dt/css/dataTables.dataTables.css'; // DataTables CSS styles
+import 'datatables.net'; // DataTables core functionality
+
 import { Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getAllEmployeesList } from "../../api/EmployeeApiClient";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ViewEmployeeComponent() {
  
     const navigate = useNavigate()
     const [empList , setEmpList] = useState([])
     const [deptList , setDeptList] = useState([])
+
+    const tableRef= useRef(null)
 
     useEffect(() => {
         getAllEmployeesList().then((response) => {
@@ -17,13 +23,20 @@ export default function ViewEmployeeComponent() {
         })
     }, [])
 
+    useEffect(()=> {
+        if(tableRef.current && empList.length>0) {
+            $(tableRef.current).DataTable();
+        }
+    },[empList])
+
     return(
         <div className="container">
             <Typography variant="h4" gutterBottom>
                 View Employees  <Button variant="contained" color="primary" style={{float : 'right'}} onClick={() => navigate(`/employee/-1`)}>Add Employee</Button>
             </Typography>
-            <table className="table table-striped table-hover">
+            <table ref={tableRef} className="table table-striped table-hover">
                 <thead>
+                    <tr>
                     <th>Sr </th>
                     <th>Employee Name</th>
                     <th>Contact</th>
@@ -32,6 +45,7 @@ export default function ViewEmployeeComponent() {
                     <th>Department</th>
                     <th>Company</th>
                     <th>Actions</th>
+                    </tr>
                 </thead>    
                 <tbody>
                 {
@@ -44,7 +58,12 @@ export default function ViewEmployeeComponent() {
                             <td>{emp.designation.desig_name}</td>
                             <td>{emp.department.dept_name}</td>
                             <td>{emp.department.company.comp_name}</td>
-                            <td><Button variant="contained" color="primary" onClick={() => navigate(`/employee/${emp.emp_id}`)}>Edit</Button></td>
+                            <td style={{ margin : "10px" }} >
+                                <Button variant="contained" color="primary" onClick={() => navigate(`/employee/${emp.emp_id}`)}>Edit</Button>
+
+                                <Button variant="contained" color="secondary" onClick={() => navigate(`/viewassignedassets`)}>View</Button>
+                                
+                            </td>
                         </tr>
                      )
                 )}

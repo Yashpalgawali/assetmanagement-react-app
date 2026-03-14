@@ -22,15 +22,12 @@ export default function DesignationComponent() {
 
     const {id}  = useParams()
     const navigate = useNavigate()
-    const tableRef = useRef(null)
-    
+    const tableRef = useRef(null)    
 
     useEffect(()=> {
         getAllDesignations().then((response)=> {
-            console.log(response.data)
             setDesignationList(response.data) }
-        )  
-         
+        )
     },[])
 
     function refreshDesignations() {             
@@ -70,11 +67,11 @@ export default function DesignationComponent() {
 
     function onSubmit(values)
     {
-        setIsDisabled(true)
+       setIsDisabled(true)
 
        let designation = {
-        desig_id : id,
-        desig_name : values.desig_name
+            desig_id : id,
+            desig_name : values.desig_name
        }
 
        if(id != -1) {

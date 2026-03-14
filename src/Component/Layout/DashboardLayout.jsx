@@ -99,6 +99,13 @@ function DashboardLayout({ children }) {
           <ListItemText primary="Employees" />
         </ListItemButton>
 
+        <ListItemButton button onClick={()=>navigate(`/viewassignedassets`)}>
+          <ListItemIcon>
+            <Groups3Icon />
+          </ListItemIcon>
+          <ListItemText primary="Assigned Assets" />
+        </ListItemButton>
+
         <ListItemButton button onClick={logout}>
           <ListItemIcon>            
             <LogoutIcon />

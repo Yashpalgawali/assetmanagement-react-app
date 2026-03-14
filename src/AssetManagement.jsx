@@ -19,6 +19,7 @@ import ViewEmployeeComponent from "./Component/EmployeeComponent/ViewEmployeeCom
 import EmployeeComponent from "./Component/EmployeeComponent/EmployeeComponent";
 import DashboardLayout from "./Component/Layout/DashboardLayout";
 import Dashboard from "./Component/Dashboard";
+import ViewAssignedAssetsComponent from "./Component/EmployeeComponent/ViewAsssignedAssetsComponent";
 
 
 
@@ -113,6 +114,11 @@ export default function AssetManagement() {
                    <Route path='/viewemployees' element={
                         <AuthenticatedRoute><DashboardLayout><ViewEmployeeComponent /></DashboardLayout> </AuthenticatedRoute> }>
                     </Route>
+
+                    <Route path='/viewassignedassets' element={
+                        <AuthenticatedRoute><DashboardLayout><ViewAssignedAssetsComponent /></DashboardLayout> </AuthenticatedRoute> }>
+                    </Route>
+                    
                  
                     <Route path='/viewdesignations' element={
                         <AuthenticatedRoute><DashboardLayout><ViewDesignationComponent /></DashboardLayout> </AuthenticatedRoute> }></Route>
