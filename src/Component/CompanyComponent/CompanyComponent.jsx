@@ -1,17 +1,21 @@
+import $ from 'jquery'; // jQuery is required for DataTables to work
+  
+import 'datatables.net-dt/css/dataTables.dataTables.css'; // DataTables CSS styles
+import 'datatables.net'; // DataTables core functionality
 
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
 import { ErrorMessage, Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAllCompaniesList, getCompanyById, updateCompany } from "../../api/CompanyApiClient";
-import {showToast} from "../SharedComponent/showToast";
 import { toast } from "react-toastify";
-import DashboardLayout from "../Layout/DashboardLayout";
+
 
 export default function CompanyComponent() {
 
     const [comp_name,setCompName] = useState('')
     const [comp_id,setCompanyId] = useState(-1)
+    const [isDisabled,setIsDisabled] = useState(false)
 
     const [companyList, setCompanyList] = useState([])
 
@@ -19,7 +23,11 @@ export default function CompanyComponent() {
     const navigate = useNavigate()
 
     const {id} = useParams()
-  
+    
+    const tableRef = useRef(null); // Ref for the table
+    
+    useEffect(()=> refreshCompanies() , [] )
+
     useEffect(()=>{
        
         if(id != -1) {
@@ -29,27 +37,55 @@ export default function CompanyComponent() {
                 setCompanyId(id)
             })
         }
-    },[id])
- 
+    },[id]) 
     
-     useEffect(()=> {
-        getAllCompaniesList().then((response) => {
+    useEffect(() => {
+        // Initialize DataTable only after the component has mounted
+       if (tableRef.current) {
+               // 🔴 Destroy old DataTable if exists
+               if ($.fn.DataTable.isDataTable(tableRef.current)) {
+                 $(tableRef.current).DataTable().destroy();
+               }
+       
+               // ✅ Initialize only when data exists
+               if (companyList.length > 0) {
+                 $(tableRef.current).DataTable({
+                   responsive: true,
+                   destroy: true // <-- Important, allows re-init
+                 });
+               }
+             }     
+      }, [companyList]); // Re-initialize DataTables when activities data changes
+   
+
+    function refreshCompanies() {     
+        getAllCompaniesList().then((response)=> {
             setCompanyList(response.data)
-        })        
-    },[])
+        }).catch((error)=>{
+             toast.error(error?.data?.errorMessage)
+        })
+    }  
 
     function saveCompany(values){
-
+        setIsDisabled(true)
         if(id == -1) {
             let companyObject = {                 
                 comp_name : values.comp_name
             }
             saveCompany(companyObject).then((response) => {
-                toast.success(response.data.successMessage)
-                navigate(`/viewcompanies`)
+                refreshCompanies()
+                toast.success(response.data.statusMsg)
+                setCompName("")
+                setIsDisabled(false)                
+                setBtnValue("Add Company")
+                navigate(`/company/-1`)
             }).catch((error)=>{
+                refreshCompanies()
                 toast.error(error.data.errorMessage)
-                navigate(`/viewcompanies`)
+                setCompName("")
+                setIsDisabled(false)                
+                setBtnValue("Add Company")
+                navigate(`/company/-1`)
             })
         }
         else {
@@ -58,11 +94,17 @@ export default function CompanyComponent() {
                 comp_name : values.comp_name
             }
             updateCompany(companyObject).then((response) => {
-                toast.success(response.data.statusMessage)                
-                navigate(`/viewcompanies`)
+                refreshCompanies()
+                toast.success(response.data.statusMsg)
+                setCompName("")
+                setIsDisabled(false)
+                navigate(`/company/-1`)
             }).catch((error)=>{
+                refreshCompanies()
                 toast.error(error.data.errorMessage)
-                navigate(`/viewcompanies`)
+                setCompName("")
+                setIsDisabled(false)
+                navigate(`/company/-1`)
             })
         }
     }
@@ -76,7 +118,7 @@ export default function CompanyComponent() {
     }
 
     return(
-        <Box>
+        <Box sx={{ width: "100%", maxWidth: 1000, mx: "auto", p: 2 }}>
              
             <Typography variant="h4">{btnValue}</Typography>
             <Formik
@@ -90,7 +132,7 @@ export default function CompanyComponent() {
                 {
                     (props) => (
                         <Form>
-                            <Box>
+                            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                                 <TextField
                                     variant="filled"
                                     id="comp_name"
@@ -105,9 +147,20 @@ export default function CompanyComponent() {
                                     autoFocus={true}
                                 >
                                 </TextField>
-                            </Box>
-                            <Box>
-                                <Button variant="contained" color="success" className="m-4" type="submit">{btnValue}</Button>
+                                
+                                    <Box sx={{ display: "flex", justifyContent: "flex-start"}}>
+                                           <Button
+                                             type="submit"
+                                             variant="contained"
+                                             color="primary"
+                                             disabled={isDisabled}
+                                              startIcon= {
+                                                             isDisabled ? <CircularProgress size={20} color="teal" /> : null
+                                                             }  
+                                           >
+                                             {btnValue}
+                                           </Button>
+                                           </Box>
                             </Box>
                         </Form>
                     )
@@ -115,8 +168,8 @@ export default function CompanyComponent() {
             </Formik>
              
              <Box>
-                     <Typography variant="h4" gutterBottom >View Companies <Button variant="contained" style={{float : 'right'}} color="primary" onClick={()=>navigate(`/company/-1`)}>Add Company</Button> </Typography>
-                     <table className="table table-striped table-hover mt-5 " width="100%">
+                     <Typography variant="h4" gutterBottom >View Companies </Typography>
+                     <table ref={tableRef} className="table table-striped table-hover  " width="100%">
                      <thead>
                          <tr>
                              <th>Sr</th>
