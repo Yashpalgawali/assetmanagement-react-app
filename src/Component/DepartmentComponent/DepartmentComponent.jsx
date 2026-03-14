@@ -37,7 +37,7 @@ export default function DepartmentComponent() {
         {
            setBtnValue('Update Department')
            retrieveDepartmentById(id).then((response) => {   
-            console.log(response.data )           
+                  
                 setCompany(response.data.company)
                 setDeptId(response.data.dept_id)
                 setDeptName(response.data.dept_name)  
