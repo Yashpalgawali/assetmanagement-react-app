@@ -61,7 +61,7 @@ export default function ViewEmployeeComponent() {
                             <td style={{ margin : "10px" }} >
                                 <Button variant="contained" color="primary" onClick={() => navigate(`/employee/${emp.emp_id}`)}>Edit</Button>
 
-                                <Button variant="contained" color="secondary" onClick={() => navigate(`/viewassignedassets`)}>View</Button>
+                                <Button variant="contained" color="secondary" onClick={() => navigate(`/viewassignedassets/${emp.emp_id}`)}>View</Button>
                                 
                             </td>
                         </tr>

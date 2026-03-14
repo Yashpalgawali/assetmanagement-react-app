@@ -1,6 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import CompanyComponent from "./Component/CompanyComponent/CompanyComponent";
-import HeaderComponent from "./Component/HeaderComponent";
+import CompanyComponent from "./Component/CompanyComponent/CompanyComponent"; 
 import ViewCompanyComponent from "./Component/CompanyComponent/ViewCompanyComponent";
 import DesignationComponent from "./Component/Designation/DesignationComponent";
 import ViewDesignationComponent from "./Component/Designation/ViewDesignationComponent";
@@ -18,8 +17,8 @@ import ViewDepartmentComponent from "./Component/DepartmentComponent/ViewDepartm
 import ViewEmployeeComponent from "./Component/EmployeeComponent/ViewEmployeeComponent";
 import EmployeeComponent from "./Component/EmployeeComponent/EmployeeComponent";
 import DashboardLayout from "./Component/Layout/DashboardLayout";
-import Dashboard from "./Component/Dashboard";
-import ViewAssignedAssetsComponent from "./Component/EmployeeComponent/ViewAsssignedAssetsComponent";
+import Dashboard from "./Component/Dashboard"; 
+import ViewAsssignedAssetsOfEmployeeComponent from "./Component/EmployeeComponent/ViewAsssignedAssetsOfEmployeeComponent";
 
 
 
@@ -115,8 +114,12 @@ export default function AssetManagement() {
                         <AuthenticatedRoute><DashboardLayout><ViewEmployeeComponent /></DashboardLayout> </AuthenticatedRoute> }>
                     </Route>
 
-                    <Route path='/viewassignedassets' element={
+                    {/* <Route path='/viewassignedassets' element={
                         <AuthenticatedRoute><DashboardLayout><ViewAssignedAssetsComponent /></DashboardLayout> </AuthenticatedRoute> }>
+                    </Route> */}
+
+                    <Route path='/viewassignedassets/:id' element={
+                        <AuthenticatedRoute><DashboardLayout><ViewAsssignedAssetsOfEmployeeComponent /></DashboardLayout> </AuthenticatedRoute> }>
                     </Route>
                     
                  
