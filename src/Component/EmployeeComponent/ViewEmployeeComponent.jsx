@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { getAllEmployeesList } from "../../api/EmployeeApiClient";
 import { useEffect, useRef, useState } from "react";
 
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+
 export default function ViewEmployeeComponent() {
  
     const navigate = useNavigate()
@@ -58,10 +61,10 @@ export default function ViewEmployeeComponent() {
                             <td>{emp.designation.desig_name}</td>
                             <td>{emp.department.dept_name}</td>
                             <td>{emp.department.company.comp_name}</td>
-                            <td style={{ margin : "10px" }} >
-                                <Button variant="contained" color="primary" onClick={() => navigate(`/employee/${emp.emp_id}`)}>Edit</Button>
+                            <td style={{  }} >
+                                <Button variant="contained" color="primary" onClick={() => navigate(`/employee/${emp.emp_id}`)}><EditIcon /> Edit</Button>
 
-                                <Button variant="contained" color="secondary" onClick={() => navigate(`/viewassignedassets/${emp.emp_id}`)}>View</Button>
+                                <Button variant="contained" color="secondary" onClick={() => navigate(`/viewassignedassets/${emp.emp_id}`)}><VisibilityIcon /> View</Button>
                                 
                             </td>
                         </tr>

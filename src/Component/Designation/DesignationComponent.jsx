@@ -123,7 +123,7 @@ export default function DesignationComponent() {
                     <Form>
                         <TextField
                             name="desig_name"
-                            variant="filled"
+                            variant="standard"
                             placeholder="Enter Designation"
                             id="desig_name"
                             value={props.values.desig_name}

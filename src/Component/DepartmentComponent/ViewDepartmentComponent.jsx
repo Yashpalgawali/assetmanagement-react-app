@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { getAllDepartments } from "../../api/DepartmentApiClient";
 import { toast } from "react-toastify";
 
+import EditIcon from '@mui/icons-material/Edit';
+
 export default function ViewDepartmentComponent() {
     const [deptList, setDeptList] = useState([]);
     const navigate = useNavigate();
@@ -51,7 +53,7 @@ export default function ViewDepartmentComponent() {
                             <td>{dept.dept_name}</td>
                             <td>{dept.company.comp_name}</td>
                             <td>
-                                <Button variant="contained" onClick={()=>navigate(`/department/${dept.dept_id}`)} >Edit</Button>
+                                <Button variant="contained" onClick={()=>navigate(`/department/${dept.dept_id}`)} ><EditIcon /> Edit</Button>
                             </td>
                         </tr>
                     ))}

@@ -1,7 +1,9 @@
 import { Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getAllDesignations } from "../../api/DesignationApiClient";
+
+import EditIcon from '@mui/icons-material/Edit';
 
 export default function ViewDesignationComponent() {
 
@@ -36,7 +38,7 @@ export default function ViewDesignationComponent() {
                         <tr key={desig.desig_id}>
                             <td>{index+1}</td>
                             <td>{desig.desig_name}</td>
-                            <td><Button variant="contained"  onClick={()=>updateDesignation(desig.desig_id)}>Update</Button></td>
+                            <td><Button variant="contained"  onClick={()=>updateDesignation(desig.desig_id)}><EditIcon />Update</Button></td>
                         </tr>
                       ))
                     }

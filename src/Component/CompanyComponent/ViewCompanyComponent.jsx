@@ -7,6 +7,8 @@ import { getAllCompaniesList } from "../../api/CompanyApiClient"
 import {Box, Button, Typography} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+import EditIcon from '@mui/icons-material/Edit';
+
 export default function ViewCompanyComponent() {
 
     const [companyList, setCompanyList] = useState([])
@@ -40,7 +42,7 @@ export default function ViewCompanyComponent() {
                 <tr key={company.comp_id}>
                     <td>{index+1}</td>
                     <td>{company.comp_name}</td>
-                    <td><Button variant="contained" onClick={()=>navigate(`/company/${company.comp_id}`)}>Update</Button> </td>
+                    <td><Button variant="contained" onClick={()=>navigate(`/company/${company.comp_id}`)}><EditIcon /> Update</Button> </td>
                 </tr>
             ))
         }

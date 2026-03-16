@@ -71,7 +71,7 @@ function DashboardLayout({ children }) {
           <ListItemText primary="Department" />
         </ListItemButton>
 
-        <ListItemButton button onClick={()=>navigate(`/viewassettypes`)}>
+        <ListItemButton button onClick={()=>navigate(`/assettype/-1`)}>
           <ListItemIcon>
             {/* <DevicesIcon /> */}
           </ListItemIcon>

@@ -134,7 +134,7 @@ export default function CompanyComponent() {
                         <Form>
                             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                                 <TextField
-                                    variant="filled"
+                                    variant="standard"
                                     id="comp_name"
                                     name="comp_name"
                                     value={props.values.comp_name}
