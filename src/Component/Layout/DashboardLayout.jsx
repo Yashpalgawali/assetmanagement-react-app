@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import   { useState } from "react";
 
 import {
   Box,
@@ -23,28 +23,31 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import BusinessIcon from '@mui/icons-material/Business';
 import Groups3Icon from '@mui/icons-material/Groups3';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
-import { useAuth } from "../Security/authContext";
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import CategoryIcon from '@mui/icons-material/Category';
+import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice';
+
+import { useAuth } from "../Security/authContext"; 
 
 const drawerWidth = 200;
 
 function DashboardLayout({ children }) {
 
   const [mobileOpen, setMobileOpen] = useState(false);
+ 
+  const navigate = useNavigate()
+
   const authContext = useAuth()
   
-      const isAuthenticated = authContext.isAuthenticated
-      
-      function logout()
-      {
-          authContext.logout()        
-      }
+    function logout()
+    {
+        authContext.logout()
+    }
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-    const navigate = useNavigate()
-
-
+    const handleDrawerToggle = () => {
+      setMobileOpen(!mobileOpen);
+    };
+   
   const drawer = (
     <div>
       <Toolbar />
@@ -73,12 +76,12 @@ function DashboardLayout({ children }) {
 
         <ListItemButton button onClick={()=>navigate(`/assettype/-1`)}>
           <ListItemIcon>
-            {/* <DevicesIcon /> */}
+            <CategoryIcon />
           </ListItemIcon>
           <ListItemText primary="Asset Type" />
         </ListItemButton>
 
-        <ListItemButton button onClick={()=>navigate(`/viewassets`)}>
+        <ListItemButton button onClick={()=>navigate(`/asset/-1`)}>
           <ListItemIcon>
              <DevicesIcon />
           </ListItemIcon>
@@ -87,7 +90,7 @@ function DashboardLayout({ children }) {
 
         <ListItemButton button onClick={()=>navigate(`/designation/-1`)}>
           <ListItemIcon>
-            {/* <DevicesIcon /> */}
+            <LocalPostOfficeIcon />
           </ListItemIcon>
           <ListItemText primary="Designation" />
         </ListItemButton>
@@ -101,7 +104,7 @@ function DashboardLayout({ children }) {
 
         <ListItemButton button onClick={()=>navigate(`/viewassignedassets`)}>
           <ListItemIcon>
-            <Groups3Icon />
+            <AssignmentTurnedInIcon />
           </ListItemIcon>
           <ListItemText primary="Assigned Assets" />
         </ListItemButton>

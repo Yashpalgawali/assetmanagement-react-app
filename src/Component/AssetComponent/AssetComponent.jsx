@@ -1,8 +1,12 @@
+import $ from 'jquery'; // jQuery is required for DataTables to work
+import 'datatables.net-dt/css/dataTables.dataTables.css'; // DataTables CSS styles
+import 'datatables.net'; // DataTables core functionality
+
 import { ErrorMessage, Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { retrieveAssetById, saveAsset, updateAsset } from "../../api/AssetApiClient";
-import { Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { getAllAssets, retrieveAssetById, saveAsset, updateAsset } from "../../api/AssetApiClient";
+import { Box, Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { getAllAssetTypes } from "../../api/AssetTypeApiClient";
 import { toast } from "react-toastify";
 
@@ -21,33 +25,71 @@ export default function AssetComponent() {
     const [atypelist,setAssetTypeList] = useState ([null]);
 
     const [btnValue,setBtnValue]  = useState("Add Asset");
+    const [isDisabled,setIsDisabled] = useState(false)
+    const [selectedAssettypeId,setSelectedAssettypeId] = useState('')
+    
+    const [assetList,setAssetList] = useState([]);
+    const tableRef= useRef(null)   
+    
     const {id} = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
-       
-       getAllAssetTypes().then((response) => {
-        setAssetTypeList(response.data)
-        
-       })
+            getAllAssets().then((response) => {
+            setAssetList(response.data)
+            })
+    } , [])
 
+    useEffect(()=> {
+        if(tableRef.current && assetList.length >0 ) 
+        {
+            $(tableRef.current).DataTable();
+        }
+    },[assetList])
+
+    useEffect(() => {
+        resetAssetForm()
+        getAllAssetTypes().then((response) => {
+            setAssetTypeList(response.data)
+        })
+        
         if(id != -1)
         {
             setBtnValue("Update Asset")
             retrieveAssetById(id).then((response) => {
-                console.log('found Asset ',response.data )
 
                 setAssetName(response.data.asset_name);
                 setAssetID(response.data.asset_id);
                 setModelNumber(response.data.model_number);
                 setAssetNumber(response.data.asset_number);
                 setQuantity(response.data.quantity);
-                setAssetType(response.data.atype);
+                setSelectedAssettypeId(response.data.atype.type_id);
+                 
             })
         }
-    }, []); 
+    }, [id]); 
 
+    function refreshAllAssets() {
+        getAllAssets().then((response) => {
+                setAssetList(response.data)
+            })
+    }
+
+    function resetAssetForm()
+    {
+        setSelectedAssettypeId('')
+        setBtnValue('Add Asset')
+        setIsDisabled(false)
+        setAssetName('')
+        setAssetNumber('')
+        setModelNumber('')
+        setQuantity('')
+        setAssetID('')
+        refreshAllAssets()
+    }
     function handleSubmit(values) {
+        setIsDisabled(true)
+
         setAssetType({
           type_id: values.atype
         })
@@ -55,32 +97,35 @@ export default function AssetComponent() {
              
         if(id == -1) {
             saveAsset(assetData).then((response) => {
-                console.log('Asset Added ', response.data)
                 toast.success(response.data.statusMsg)
-                navigate('/viewassets')
+                resetAssetForm()
+                navigate(`/asset/-1`)
             }).catch((error) => {
                 toast.error(error.data.errorMsg)
-                navigate('/viewassets')
+                resetAssetForm()
+                navigate(`/asset/-1`)
             })
         }
         else {
             updateAsset(assetData).then((response) => {
-                console.log('Asset Updated ', response.data)
+                
                 toast.success(response.data.statusMsg)
-                navigate('/viewassets')
+                resetAssetForm()
+                navigate(`/asset/-1`)
             }).catch((error) => {
+                 
                 toast.error(error.data.errorMsg)
-                navigate('/viewassets')
+                resetAssetForm()
+                navigate(`/asset/-1`)
             })
         }
     }
 
   return (
-    <div className="container">
+    <Box >
       <Typography variant="h4" gutterBottom> {btnValue} </Typography>
-
       <Formik
-        initialValues={{ asset_name, asset_id, model_number,asset_number, quantity, atype }}
+        initialValues={{ asset_name, asset_id, model_number,asset_number, quantity,  atype : selectedAssettypeId  }}
         enableReinitialize={true}
         validateOnBlur={false}
         validateOnChange={false}
@@ -159,12 +204,43 @@ export default function AssetComponent() {
                             error={props.touched.quantity && Boolean(props.errors.quantity)}
                             helperText={<ErrorMessage name="quantity" />}
                             fullWidth />
-                    <Button variant="contained" type="submit" color="success"> {btnValue} </Button>
+                    <Button variant="contained" sx={{float : 'left'}} type="submit" disabled={isDisabled} color="primary"> {btnValue} </Button>
                 </Form>
             )
         }
       </Formik>
-
-    </div>
+        <div>
+        <Typography variant="h4" gutterBottom>View Assets </Typography>
+                    <table ref={tableRef} className="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                            <th>Sr</th>
+                            <th>Asset Type</th>
+                            <th>Asset Name</th>
+                            <th>Model Number</th>
+                            <th>Quantity</th>
+                            <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                            assetList.map((asset,index) => {
+                                return(
+                                    <tr key={asset.asset_id}>
+                                        <td>{index+1}</td>
+                                        <td>{asset.atype.type_name}</td>
+                                        <td>{asset.asset_name}</td>
+                                        <td>{asset.model_number}</td>
+                                        <td>{asset.quantity}</td>
+                                        <td>
+                                            <Button variant="contained" onClick={() => navigate(`/asset/${asset.asset_id}`)}>Edit</Button></td>
+                                    </tr>
+                                )
+                            }) 
+                            }        
+                        </tbody>
+                    </table>
+                </div>
+    </Box>
   );
 }

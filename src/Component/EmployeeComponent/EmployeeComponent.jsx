@@ -13,11 +13,33 @@ export default function EmployeeComponent() {
 
     const [emp_name,setEmpName] = useState("")
     const [emp_code,setEmpCode] = useState("")
-    const [department,  setDepartment] = useState("")
-    const [designation, setDesignation] = useState("")
+   
+    const [designation, setDesignation] = useState({
+        desig_id : '',
+        desig_name : ''
+    })
+
+   
+    const [selectedDeptId,setSelectedDeptId] = useState('')
+    const [selectedCompanyId,setSelectedCompanyId] = useState('')
+    const [selectedDesigId,setSelectedDesigId] = useState('')
+
     const [emp_email,setEmpEmail] = useState("")
     const [emp_contact,setEmpContact] = useState("")
     
+    const [company,setCompany] = useState({
+        comp_id: '',
+        comp_name : ''
+    })
+
+    const [department,setDepartment] = useState({
+        dept_id : '',
+        dept_name : '',
+        company : {
+            comp_id: '',
+            comp_name : ''
+        }
+    })
     const [compList, setCompList] = useState([])
     const [deptList,setDeptList] = useState([])
     const [desigList,setDesigList] = useState([])
@@ -31,7 +53,17 @@ export default function EmployeeComponent() {
     const navigate = useNavigate()
     const empId = Number(id)    
 
-    useEffect(() => { 
+    useEffect(() => {
+          getAllCompaniesList().then((response) => {
+            setCompList(response.data)
+        })
+        getAllDesignations().then((response) => {
+            setDesigList(response.data)
+        })
+        getAllAssets().then((response) => {
+            setAssetDisabled(false)
+            setAssetList(response.data)
+        })
         if(empId != -1 ) {
             setBtnValue("Update Employee")
             retrieveEmployeeById(empId).then((response) => {
@@ -41,19 +73,16 @@ export default function EmployeeComponent() {
                 setDepartment(response.data.department)
                 setEmpEmail(response.data.emp_email)
                 setDesignation(response.data.designation)
+                setSelectedDesigId(response.data.designation.desig_id)
+                setSelectedDeptId(response.data.department.dept_id)
+                setSelectedCompanyId(response.data.department.company.comp_id)
+                retrieveDepartmentsByCompanyId(response.data.department.company.comp_id).then((response) => {
+                    setDeptList(response.data)
+                })
                 setEmpContact(response.data.emp_contact)
             }).catch((error) => {})
         }
-        getAllCompaniesList().then((response) => {
-            setCompList(response.data)
-        })
-        getAllDesignations().then((response) => {
-            setDesigList(response.data)
-        })
-        getAllAssets().then((response) => {
-            setAssetDisabled(false)             
-            setAssetList(response.data)
-        })
+      
     }, []) 
     const customStyles = {
             menu  : (provided) => ({
@@ -96,9 +125,9 @@ export default function EmployeeComponent() {
             setDeptList(response.data)
         })   
     }   
-function TrainingMultiSelect({ options }) {
+function AssetMultiSelect({ options }) {
   const { setFieldValue, values } = useFormikContext();
-
+alert('multiselect')
   return (
     <Select
       styles={customStyles}
@@ -110,6 +139,7 @@ function TrainingMultiSelect({ options }) {
       classNamePrefix="select"
       onChange={(selectedOptions) => {
         const ids = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
+        alert(ids)
         setFieldValue("asset_ids", ids);
       }}
       value={options.filter((opt) => values.asset_ids?.includes(opt.value))}
@@ -117,7 +147,7 @@ function TrainingMultiSelect({ options }) {
   );
 }
 
-   const options = assetList.length
+   const options = assetList.length > 0
                                     ? assetList.map((asset) => ({
                                         value: asset.asset_id,
                                         label: asset.asset_name
@@ -128,7 +158,7 @@ function TrainingMultiSelect({ options }) {
         <div className="container">
             <Typography variant="h4" gutterBottom> {btnValue} </Typography>
             <Formik
-                initialValues={{ emp_name, emp_code, department, designation,emp_email, emp_contact ,asset_ids : []}}
+                initialValues={{ emp_name, emp_code, department : selectedDeptId,company : selectedCompanyId, designation : selectedDesigId ,emp_email, emp_contact ,asset_ids : []}}
                 enableReinitialize={true}
                 validateOnBlur={false}   
                 validateOnChange={false}
@@ -280,7 +310,7 @@ function TrainingMultiSelect({ options }) {
                                 </>
                             ) : (
                             <>                                       
-                                <TrainingMultiSelect options={options} disabled={assetListDisabled}/>
+                                <AssetMultiSelect options={options} disabled={assetListDisabled}/>
                             </>
                             )
                         }                                               

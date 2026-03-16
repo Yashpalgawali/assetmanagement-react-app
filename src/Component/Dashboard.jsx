@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -18,9 +18,20 @@ import ComputerIcon from "@mui/icons-material/Computer";
 import WarningIcon from "@mui/icons-material/Warning";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+
 import { BarChart, PieChart } from "@mui/x-charts";
+import { getAllAssets, getAllAssetsCount } from "../api/AssetApiClient";
+import { getAllAssignedAssets, getAllEmployeesList } from "../api/EmployeeApiClient";
 
 export default function Dashboard() {
+
+  const [assetCount,setAssetCount] = useState('')
+  const [assetTypeCount,setAssettypeCount] = useState('')
+  const [employeeCount,setEmployeeCount] = useState('')
+
+  const [assignedAssetsCount,setAssignedAssetsCount] = useState('')
+  const [assetCategoryData,setAssetCategoryData] = useState([])
 
   const assetUsageData = [
     { month: "Jan", assets: 30 },
@@ -30,12 +41,7 @@ export default function Dashboard() {
     { month: "May", assets: 70 }
   ];
 
-  const assetCategoryData = [
-    { id: 0, value: 45, label: "Laptops" },
-    { id: 1, value: 25, label: "Desktops" },
-    { id: 2, value: 15, label: "Printers" },
-    { id: 3, value: 15, label: "Networking" }
-  ];
+   
 
   const recentAssets = [
     { name: "Dell Latitude", category: "Laptop", assigned: "John" },
@@ -43,6 +49,29 @@ export default function Dashboard() {
     { name: "Cisco Router", category: "Network", assigned: "IT Team" },
     { name: "MacBook Pro", category: "Laptop", assigned: "CEO" }
   ];
+
+   useEffect(()=>{
+      getAllEmployeesList().then((response) => {          
+          setEmployeeCount(response.data.length)
+        })
+
+        getAllAssetsCount().then((response) => {          
+          setAssetCount(response.data)
+        })
+        getAllAssignedAssets().then((response) => {
+            setAssignedAssetsCount(response.data.length)
+        })
+        getAllAssets().then((response) => {
+            const formattedData = response.data.map((item, index) => ({
+              id: index,
+              value: Number(item.quantity),
+              label: item.atype.type_name
+            }));
+
+          setAssetCategoryData(formattedData);
+        });
+        
+      }, [])
 
   const StatCard = ({ title, value, icon }) => (
     <Card elevation={3}>
@@ -70,7 +99,7 @@ export default function Dashboard() {
         <Grid item xs={12} md={3}>
           <StatCard
             title="Total Assets"
-            value="520"
+            value={assetCount}
             icon={<InventoryIcon color="primary" sx={{ fontSize: 40 }} />}
           />
         </Grid>
@@ -78,15 +107,15 @@ export default function Dashboard() {
         <Grid item xs={12} md={3}>
           <StatCard
             title="Assigned Assets"
-            value="430"
+            value={assignedAssetsCount}
             icon={<ComputerIcon color="success" sx={{ fontSize: 40 }} />}
           />
         </Grid>
 
         <Grid item xs={12} md={3}>
           <StatCard
-            title="Maintenance"
-            value="32"
+            title="Employees"
+            value={employeeCount}
             icon={<WarningIcon color="warning" sx={{ fontSize: 40 }} />}
           />
         </Grid>
@@ -143,7 +172,7 @@ export default function Dashboard() {
       <Box mt={4}>
         <Paper sx={{ p: 2 }}>
           <Typography variant="h6" mb={2}>
-            Recently Assigned Assets
+             <AssignmentTurnedInIcon /> Recently Assigned Assets
           </Typography>
 
           <Table>
