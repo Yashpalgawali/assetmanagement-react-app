@@ -62,7 +62,7 @@ export default function ViewEmployeeComponent() {
                             <td>{emp.department.dept_name}</td>
                             <td>{emp.department.company.comp_name}</td>
                             <td style={{  }} >
-                                <Button variant="contained" color="primary" onClick={() => navigate(`/employee/${emp.emp_id}`)}><EditIcon /> Edit</Button>
+                                <Button variant="contained" color="success" onClick={() => navigate(`/employee/${emp.emp_id}`)}><EditIcon /> Edit</Button>
 
                                 <Button variant="contained" color="secondary" onClick={() => navigate(`/viewassignedassets/${emp.emp_id}`)}><VisibilityIcon /> View</Button>
                                 

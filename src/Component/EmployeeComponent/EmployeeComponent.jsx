@@ -126,8 +126,7 @@ export default function EmployeeComponent() {
         })   
     }   
 function AssetMultiSelect({ options }) {
-  const { setFieldValue, values } = useFormikContext();
-alert('multiselect')
+  const { setFieldValue, values } = useFormikContext(); 
   return (
     <Select
       styles={customStyles}
@@ -314,7 +313,7 @@ alert('multiselect')
                             </>
                             )
                         }                                               
-                        <Button variant="contained" color="success" className="m-2" type="submit">{btnValue}</Button>
+                        <Button variant="contained"  className="m-2" type="submit">{btnValue}</Button>
                     </Form>
                 )
             }

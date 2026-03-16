@@ -9,6 +9,7 @@ import { getAllAssets, retrieveAssetById, saveAsset, updateAsset } from "../../a
 import { Box, Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { getAllAssetTypes } from "../../api/AssetTypeApiClient";
 import { toast } from "react-toastify";
+import EditIcon from '@mui/icons-material/Edit';
 
 export default function AssetComponent() {
     
@@ -233,7 +234,7 @@ export default function AssetComponent() {
                                         <td>{asset.model_number}</td>
                                         <td>{asset.quantity}</td>
                                         <td>
-                                            <Button variant="contained" onClick={() => navigate(`/asset/${asset.asset_id}`)}>Edit</Button></td>
+                                            <Button variant="contained" color='success'  onClick={() => navigate(`/asset/${asset.asset_id}`)}><EditIcon /> Edit</Button></td>
                                     </tr>
                                 )
                             }) 

@@ -53,7 +53,7 @@ export default function ViewDepartmentComponent() {
                             <td>{dept.dept_name}</td>
                             <td>{dept.company.comp_name}</td>
                             <td>
-                                <Button variant="contained" onClick={()=>navigate(`/department/${dept.dept_id}`)} ><EditIcon /> Edit</Button>
+                                <Button variant="contained" color='success' onClick={()=>navigate(`/department/${dept.dept_id}`)} ><EditIcon /> Edit</Button>
                             </td>
                         </tr>
                     ))}

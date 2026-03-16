@@ -17,7 +17,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import ComputerIcon from "@mui/icons-material/Computer";
 import WarningIcon from "@mui/icons-material/Warning";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-
+import PersonIcon from '@mui/icons-material/Person';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 import { BarChart, PieChart } from "@mui/x-charts";
@@ -67,7 +67,7 @@ export default function Dashboard() {
               value: Number(item.quantity),
               label: item.atype.type_name
             }));
-
+             
           setAssetCategoryData(formattedData);
         });
         
@@ -116,7 +116,7 @@ export default function Dashboard() {
           <StatCard
             title="Employees"
             value={employeeCount}
-            icon={<WarningIcon color="warning" sx={{ fontSize: 40 }} />}
+            icon={<PersonIcon color="warning" sx={{ fontSize: 40 }} />}
           />
         </Grid>
 
