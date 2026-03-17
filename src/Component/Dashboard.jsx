@@ -10,7 +10,8 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableBody
+  TableBody,
+  Button
 } from "@mui/material";
 
 import InventoryIcon from "@mui/icons-material/Inventory";
@@ -23,6 +24,13 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import { BarChart, PieChart } from "@mui/x-charts";
 import { getAllAssets, getAllAssetsCount } from "../api/AssetApiClient";
 import { getAllAssignedAssets, getAllEmployeesList } from "../api/EmployeeApiClient";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
+import { gsap } from "gsap";
+
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import { Fancybox } from "@fancyapps/ui";
 
 export default function Dashboard() {
 
@@ -50,7 +58,32 @@ export default function Dashboard() {
     { name: "MacBook Pro", category: "Laptop", assigned: "CEO" }
   ];
 
+  useEffect(() => {
+  AOS.init({ duration: 1000 });
+
+  setTimeout(() => {
+    window.dispatchEvent(new Event("resize"));
+  }, 500); // 🔥 important
+}, []);
+
    useEffect(()=>{
+    AOS.init({ duration: 1000 });
+
+    gsap.from(".gsap-card", {
+      y: 50,
+      opacity: 0,
+      stagger: 0.2,
+      duration: 1
+    });
+
+     gsap.from(".chart-card", {
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.3
+      });
+    Fancybox.bind("[data-fancybox]", {});
+
       getAllEmployeesList().then((response) => {          
           setEmployeeCount(response.data.length)
         })
@@ -74,7 +107,7 @@ export default function Dashboard() {
       }, [])
 
   const StatCard = ({ title, value, icon }) => (
-    <Card elevation={3}>
+    <Card elevation={3} data-aos="fade-down">
       <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         {icon}
         <Box>
@@ -88,7 +121,7 @@ export default function Dashboard() {
   return (
     <Box p={3}>
 
-      <Typography variant="h4" mb={3} fontWeight="bold">
+      <Typography variant="h4" mb={3} fontWeight="bold" data-aos="fade-left">
         Asset Management Dashboard
       </Typography>
 
@@ -119,7 +152,7 @@ export default function Dashboard() {
             icon={<PersonIcon color="warning" sx={{ fontSize: 40 }} />}
           />
         </Grid>
-
+  
         <Grid item xs={12} md={3}>
           <StatCard
             title="Asset Value"
@@ -135,7 +168,9 @@ export default function Dashboard() {
       <Grid container spacing={3}>
 
         <Grid item xs={12} md={7}>
-          <Paper sx={{ p: 2 }}>
+          <Paper sx={{ p: 2 }}
+            data-aos="fade-up"
+          >
             <Typography variant="h6" mb={2}>
               Asset Allocation Trend
             </Typography>
@@ -148,8 +183,21 @@ export default function Dashboard() {
           </Paper>
         </Grid>
 
+ 
         <Grid item xs={12} md={5}>
-          <Paper sx={{ p: 2 }}>
+          {/* <Paper sx={{ p: 2 }}
+            className="chart-card"
+          > */}
+              <Paper
+              data-aos="fade-left"
+              sx={{
+                p: 2,
+                borderRadius: 3,
+                boxShadow: 3,
+                transition: "0.3s",
+                "&:hover": { boxShadow: 6 }
+              }}
+          >
             <Typography variant="h6" mb={2}>
               Asset Categories
             </Typography>
@@ -160,8 +208,10 @@ export default function Dashboard() {
                   data: assetCategoryData
                 }
               ]}
+              width={300}   // ✅ add this
               height={300}
             />
+           
           </Paper>
         </Grid>
 
@@ -170,7 +220,9 @@ export default function Dashboard() {
       {/* RECENT ASSETS */}
 
       <Box mt={4}>
-        <Paper sx={{ p: 2 }}>
+        <Paper sx={{ p: 2 }}
+           data-aos="fade-up"
+        >
           <Typography variant="h6" mb={2}>
              <AssignmentTurnedInIcon /> Recently Assigned Assets
           </Typography>
