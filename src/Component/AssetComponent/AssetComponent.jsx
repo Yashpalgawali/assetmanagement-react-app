@@ -1,247 +1,295 @@
-import $ from 'jquery'; // jQuery is required for DataTables to work
-import 'datatables.net-dt/css/dataTables.dataTables.css'; // DataTables CSS styles
-import 'datatables.net'; // DataTables core functionality
-
+import { 
+    Box, 
+    Button, 
+    Card, 
+    CardContent, 
+    CircularProgress, 
+    Divider, 
+    FormControl, 
+    IconButton, 
+    InputLabel, 
+    MenuItem, 
+    Select, 
+    Stack, 
+    TextField, 
+    Typography,
+    useTheme,
+    alpha,
+    Grid
+} from "@mui/material";
 import { ErrorMessage, Form, Formik } from "formik";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAllAssets, retrieveAssetById, saveAsset, updateAsset } from "../../api/AssetApiClient";
-import { Box, Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { retrieveAssetById, saveAsset, updateAsset } from "../../api/AssetApiClient";
 import { getAllAssetTypes } from "../../api/AssetTypeApiClient";
 import { toast } from "react-toastify";
-import EditIcon from '@mui/icons-material/Edit';
+
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DesktopMacIcon from '@mui/icons-material/DesktopMac';
+import SaveIcon from '@mui/icons-material/Save';
 
 export default function AssetComponent() {
-    
-    const [asset_name,setAssetName] = useState("");
-    const [asset_id,setAssetID] = useState("");
-    const [model_number,setModelNumber] = useState("");
-    const [asset_number,setAssetNumber] = useState("");
-    
-    const [quantity,setQuantity ] = useState("");
-    const [atype,setAssetType] = useState({
-                                        type_id: 0,
-                                        type_name: ""
-                                    });
-    const [atypelist,setAssetTypeList] = useState ([null]);
-
-    const [btnValue,setBtnValue]  = useState("Add Asset");
-    const [isDisabled,setIsDisabled] = useState(false)
-    const [selectedAssettypeId,setSelectedAssettypeId] = useState('')
-    
-    const [assetList,setAssetList] = useState([]);
-    const tableRef= useRef(null)   
-    
-    const {id} = useParams();
+    const theme = useTheme();
+    const { id } = useParams();
     const navigate = useNavigate();
+    
+    const [initialValues, setInitialValues] = useState({
+        asset_name: "",
+        asset_id: "",
+        model_number: "",
+        asset_number: "",
+        quantity: "",
+        atype: ""
+    });
+    
+    const [atypelist, setAssetTypeList] = useState([]);
+    const [isDisabled, setIsDisabled] = useState(false);
+    const [title, setTitle] = useState("Register New Asset");
 
     useEffect(() => {
-            getAllAssets().then((response) => {
-            setAssetList(response.data)
-            })
-    } , [])
-
-    useEffect(()=> {
-        if(tableRef.current && assetList.length >0 ) 
-        {
-            $(tableRef.current).DataTable();
-        }
-    },[assetList])
-
-    useEffect(() => {
-        resetAssetForm()
         getAllAssetTypes().then((response) => {
-            setAssetTypeList(response.data)
-        })
+            setAssetTypeList(response.data);
+        });
         
-        if(id != -1)
-        {
-            setBtnValue("Update Asset")
+        if (id && id !== "-1") {
+            setTitle("Update Asset Specifications");
             retrieveAssetById(id).then((response) => {
-
-                setAssetName(response.data.asset_name);
-                setAssetID(response.data.asset_id);
-                setModelNumber(response.data.model_number);
-                setAssetNumber(response.data.asset_number);
-                setQuantity(response.data.quantity);
-                setSelectedAssettypeId(response.data.atype.type_id);
-                 
-            })
+                setInitialValues({
+                    asset_name: response.data.asset_name,
+                    asset_id: response.data.asset_id,
+                    model_number: response.data.model_number,
+                    asset_number: response.data.asset_number,
+                    quantity: response.data.quantity,
+                    atype: response.data.atype.type_id
+                });
+            }).catch(error => {
+                toast.error("Error: Could not retrieve asset details from the server.");
+            });
+        } else {
+            setTitle("Register New Asset");
+            setInitialValues({
+                asset_name: "",
+                asset_id: "",
+                model_number: "",
+                asset_number: "",
+                quantity: "",
+                atype: ""
+            });
         }
-    }, [id]); 
+    }, [id]);
 
-    function refreshAllAssets() {
-        getAllAssets().then((response) => {
-                setAssetList(response.data)
-            })
-    }
-
-    function resetAssetForm()
-    {
-        setSelectedAssettypeId('')
-        setBtnValue('Add Asset')
-        setIsDisabled(false)
-        setAssetName('')
-        setAssetNumber('')
-        setModelNumber('')
-        setQuantity('')
-        setAssetID('')
-        refreshAllAssets()
-    }
-    function handleSubmit(values) {
-        setIsDisabled(true)
-
-        setAssetType({
-          type_id: values.atype
-        })
-        const assetData = { asset_name : values.asset_name , asset_id: values.asset_id, model_number: values.model_number, asset_number: values.asset_number, quantity: values.quantity, atype: values.atype };
+    function handleSubmit(values, { resetForm }) {
+        setIsDisabled(true);
+        const assetData = { 
+            ...values,
+            atype: { type_id: values.atype } // API expects object for type
+        };
              
-        if(id == -1) {
-            saveAsset(assetData).then((response) => {
-                toast.success(response.data.statusMsg)
-                resetAssetForm()
-                navigate(`/asset/-1`)
-            }).catch((error) => {
-                toast.error(error.data.errorMsg)
-                resetAssetForm()
-                navigate(`/asset/-1`)
-            })
-        }
-        else {
-            updateAsset(assetData).then((response) => {
-                
-                toast.success(response.data.statusMsg)
-                resetAssetForm()
-                navigate(`/asset/-1`)
-            }).catch((error) => {
-                 
-                toast.error(error.data.errorMsg)
-                resetAssetForm()
-                navigate(`/asset/-1`)
-            })
-        }
+        const apiCall = id === "-1" ? saveAsset(assetData) : updateAsset(assetData);
+
+        apiCall.then((response) => {
+            toast.success(id === "-1" ? "Asset successfully added to inventory!" : "Asset details have been successfully updated.");
+            setIsDisabled(false);
+            if (id === "-1") resetForm();
+            navigate('/viewassets');
+        }).catch((error) => {
+            toast.error(error.response?.data?.errorMessage || "An unexpected error occurred while saving the asset.");
+            setIsDisabled(false);
+        });
     }
 
-  return (
-    <Box >
-      <Typography variant="h4" gutterBottom> {btnValue} </Typography>
-      <Formik
-        initialValues={{ asset_name, asset_id, model_number,asset_number, quantity,  atype : selectedAssettypeId  }}
-        enableReinitialize={true}
-        validateOnBlur={false}
-        validateOnChange={false}
-        onSubmit={handleSubmit}
-      >
-        {
-            (props)=> (
-                <Form>
-                    <FormControl
-                                variant="standard"
-                                fullWidth
-                                error={props.touched.atype && Boolean(props.errors.atype)}
-                                >
-                    <InputLabel id="asset-type-label">Select Asset Type</InputLabel>
-                    <Select
-                        labelId="asset-type-label"
-                        id="atype"
-                        name="atype"
-                        value={props.values.atype}
-                        onChange={props.handleChange}
-                        onBlur={props.handleBlur}
+    function validate(values) {
+        let errors = {};
+        if (!values.asset_name) errors.asset_name = "Name is required";
+        if (!values.atype) errors.atype = "Type is required";
+        if (!values.quantity) errors.quantity = "Quantity is required";
+        return errors;
+    }
+
+    return (
+        <Box sx={{ p: { xs: 2, md: 4 }, display: 'flex', justifyContent: 'center' }} className="fade-in">
+            <Card 
+                sx={{ 
+                    width: '100%', 
+                    maxWidth: 800, 
+                    borderRadius: 4, 
+                    boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
+                    overflow: 'visible'
+                }}
+            >
+                <Box 
+                    sx={{ 
+                        p: 3, 
+                        background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+                        color: 'white',
+                        borderRadius: '16px 16px 0 0',
+                        position: 'relative'
+                    }}
+                >
+                    <IconButton 
+                        onClick={() => navigate('/viewassets')} 
+                        sx={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'white' }}
                     >
-                    {atypelist &&
-                            atypelist.map((atype) =>
-                                atype ? (
-                                <MenuItem key={atype.type_id} value={atype.type_id}>
-                                    {atype.type_name}
-                                </MenuItem>
-                                ) : null
-                            )}
-                    </Select>
-                  </FormControl>
-                <TextField  id="asset_name"
-                            name="asset_name"
-                            label="Asset Name"
-                            variant="standard"
-                            placeholder="Enter Asset Name"
-                            value={props.values.asset_name}
-                            onChange={props.handleChange}
-                            onBlur={props.handleBlur}
-                            error={props.touched.asset_name && Boolean(props.errors.asset_name)}
-                            helperText={<ErrorMessage name="asset_name" />}
-                            fullWidth />
-                <TextField  id="model_number"
-                            name="model_number"
-                            label="Model Number"
-                            variant="standard"
-                            placeholder="Enter Assets Model Number "
-                            value={props.values.model_number}
-                            onChange={props.handleChange}
-                            onBlur={props.handleBlur}
-                            error={props.touched.model_number && Boolean(props.errors.model_number)}
-                            helperText={<ErrorMessage name="model_number" />}
-                            fullWidth />
+                        <ArrowBackIcon />
+                    </IconButton>
+                    <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
+                        <DesktopMacIcon sx={{ fontSize: 32 }} />
+                        <Typography variant="h5" fontWeight="bold">
+                            {title}
+                        </Typography>
+                    </Stack>
+                </Box>
 
-                    <TextField  id="asset_number"
-                            name="asset_number"
-                            label="Asset Number"
-                            variant="standard"
-                            placeholder="Enter Asset Number"
-                            value={props.values.asset_number}
-                            onChange={props.handleChange}
-                            onBlur={props.handleBlur}
-                            error={props.touched.asset_number && Boolean(props.errors.asset_number)}
-                            helperText={<ErrorMessage name="asset_number" />}
-                            fullWidth />
+                <CardContent sx={{ p: 4 }}>
+                    <Formik
+                        initialValues={initialValues}
+                        enableReinitialize={true}
+                        onSubmit={handleSubmit}
+                        validate={validate}
+                    >
+                        {(props) => (
+                            <Form>
+                                <Grid container spacing={3}>
+                                    <Grid item xs={12}>
+                                        <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, fontWeight: 'bold' }}>
+                                            General Information
+                                        </Typography>
+                                    </Grid>
+                                    
+                                    <Grid item xs={12} md={6}>
+                                        <FormControl fullWidth variant="outlined" error={props.touched.atype && Boolean(props.errors.atype)}>
+                                            <InputLabel id="asset-type-label">Asset Type</InputLabel>
+                                            <Select
+                                                labelId="asset-type-label"
+                                                id="atype"
+                                                name="atype"
+                                                label="Asset Type"
+                                                value={props.values.atype}
+                                                onChange={props.handleChange}
+                                                onBlur={props.handleBlur}
+                                                sx={{ borderRadius: 2 }}
+                                            >
+                                                {atypelist.map((type) => (
+                                                    <MenuItem key={type.type_id} value={type.type_id}>
+                                                        {type.type_name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                            {props.touched.atype && props.errors.atype && (
+                                                <Typography variant="caption" color="error" sx={{ ml: 1.5, mt: 0.5 }}>
+                                                    {props.errors.atype}
+                                                </Typography>
+                                            )}
+                                        </FormControl>
+                                    </Grid>
 
-                    <TextField  id="quantity"
-                            name="quantity"
-                            label="Quantity"
-                            variant="standard"
-                            placeholder="Enter Quantity"
-                            value={props.values.quantity}
-                            onChange={props.handleChange}
-                            onBlur={props.handleBlur}
-                            error={props.touched.quantity && Boolean(props.errors.quantity)}
-                            helperText={<ErrorMessage name="quantity" />}
-                            fullWidth />
-                    <Button variant="contained" sx={{float : 'left'}} type="submit" disabled={isDisabled} color="primary"> {btnValue} </Button>
-                </Form>
-            )
-        }
-      </Formik>
-        <div>
-        <Typography variant="h4" gutterBottom>View Assets </Typography>
-                    <table ref={tableRef} className="table table-hover table-striped">
-                        <thead>
-                            <tr>
-                            <th>Sr</th>
-                            <th>Asset Type</th>
-                            <th>Asset Name</th>
-                            <th>Model Number</th>
-                            <th>Quantity</th>
-                            <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                            assetList.map((asset,index) => {
-                                return(
-                                    <tr key={asset.asset_id}>
-                                        <td>{index+1}</td>
-                                        <td>{asset.atype.type_name}</td>
-                                        <td>{asset.asset_name}</td>
-                                        <td>{asset.model_number}</td>
-                                        <td>{asset.quantity}</td>
-                                        <td>
-                                            <Button variant="contained" color='success'  onClick={() => navigate(`/asset/${asset.asset_id}`)}><EditIcon /> Edit</Button></td>
-                                    </tr>
-                                )
-                            }) 
-                            }        
-                        </tbody>
-                    </table>
-                </div>
-    </Box>
-  );
+                                    <Grid item xs={12} md={6}>
+                                        <TextField
+                                            fullWidth
+                                            id="asset_name"
+                                            name="asset_name"
+                                            label="Asset Name"
+                                            placeholder="e.g. Dell Latitude 5420"
+                                            value={props.values.asset_name}
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            error={props.touched.asset_name && Boolean(props.errors.asset_name)}
+                                            helperText={props.touched.asset_name && props.errors.asset_name}
+                                            variant="outlined"
+                                            InputProps={{ sx: { borderRadius: 2 } }}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Divider sx={{ my: 1 }} />
+                                        <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, mt: 2, fontWeight: 'bold' }}>
+                                            Inventory Details
+                                        </Typography>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={4}>
+                                        <TextField
+                                            fullWidth
+                                            id="model_number"
+                                            name="model_number"
+                                            label="Model Number"
+                                            placeholder="MI-12345"
+                                            value={props.values.model_number}
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            variant="outlined"
+                                            InputProps={{ sx: { borderRadius: 2 } }}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={4}>
+                                        <TextField
+                                            fullWidth
+                                            id="asset_number"
+                                            name="asset_number"
+                                            label="Serial/Asset Number"
+                                            placeholder="SN-987654"
+                                            value={props.values.asset_number}
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            variant="outlined"
+                                            InputProps={{ sx: { borderRadius: 2 } }}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={4}>
+                                        <TextField
+                                            fullWidth
+                                            id="quantity"
+                                            name="quantity"
+                                            label="Quantity"
+                                            type="number"
+                                            value={props.values.quantity}
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            error={props.touched.quantity && Boolean(props.errors.quantity)}
+                                            helperText={props.touched.quantity && props.errors.quantity}
+                                            variant="outlined"
+                                            InputProps={{ sx: { borderRadius: 2 } }}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Divider sx={{ mt: 2, mb: 1 }} />
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Stack direction="row" spacing={2} justifyContent="flex-end">
+                                            <Button
+                                                variant="outlined"
+                                                onClick={() => navigate('/viewassets')}
+                                                sx={{ borderRadius: 2, px: 3, textTransform: 'none' }}
+                                            >
+                                                Discard
+                                            </Button>
+                                            <Button
+                                                type="submit"
+                                                variant="contained"
+                                                disabled={isDisabled || !props.dirty}
+                                                startIcon={isDisabled ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
+                                                sx={{ 
+                                                    borderRadius: 2, 
+                                                    px: 4, 
+                                                    textTransform: 'none',
+                                                    fontWeight: 'bold',
+                                                    boxShadow: 4
+                                                }}
+                                            >
+                                                {isDisabled ? "Processing..." : id === "-1" ? "Add to Inventory" : "Update Asset"}
+                                            </Button>
+                                        </Stack>
+                                    </Grid>
+                                </Grid>
+                            </Form>
+                        )}
+                    </Formik>
+                </CardContent>
+            </Card>
+        </Box>
+    );
 }

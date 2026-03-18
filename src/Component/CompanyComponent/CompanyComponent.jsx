@@ -1,196 +1,179 @@
-import $ from 'jquery'; // jQuery is required for DataTables to work
-  
-import 'datatables.net-dt/css/dataTables.dataTables.css'; // DataTables CSS styles
-import 'datatables.net'; // DataTables core functionality
-
-import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
+import { 
+    Box, 
+    Button, 
+    Card, 
+    CardContent, 
+    CircularProgress, 
+    Divider, 
+    IconButton, 
+    Stack, 
+    TextField, 
+    Typography,
+    useTheme,
+    alpha
+} from "@mui/material";
 import { ErrorMessage, Form, Formik } from "formik";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAllCompaniesList, getCompanyById, updateCompany } from "../../api/CompanyApiClient";
+import { getCompanyById, updateCompany, saveCompany as saveCompanyApi } from "../../api/CompanyApiClient";
 import { toast } from "react-toastify";
 
-import EditIcon from '@mui/icons-material/Edit';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import BusinessIcon from '@mui/icons-material/Business';
+import SaveIcon from '@mui/icons-material/Save';
 
 export default function CompanyComponent() {
-
-    const [comp_name,setCompName] = useState('')
-    const [comp_id,setCompanyId] = useState(-1)
-    const [isDisabled,setIsDisabled] = useState(false)
-
-    const [companyList, setCompanyList] = useState([])
-
-    const [btnValue,setBtnValue] = useState("Add Company")
-    const navigate = useNavigate()
-
-    const {id} = useParams()
+    const theme = useTheme();
+    const { id } = useParams();
+    const navigate = useNavigate();
     
-    const tableRef = useRef(null); // Ref for the table
-    
-    useEffect(()=> refreshCompanies() , [] )
+    const [comp_name, setCompName] = useState('');
+    const [isDisabled, setIsDisabled] = useState(false);
+    const [title, setTitle] = useState("Add New Company");
 
-    useEffect(()=>{
-       
-        if(id != -1) {
-            setBtnValue("Update Company")
-            getCompanyById(id).then(response=> {
-                setCompName(response.data.comp_name)
-                setCompanyId(id)
-            })
-        }
-    },[id]) 
-    
     useEffect(() => {
-        // Initialize DataTable only after the component has mounted
-       if (tableRef.current) {
-               // 🔴 Destroy old DataTable if exists
-               if ($.fn.DataTable.isDataTable(tableRef.current)) {
-                 $(tableRef.current).DataTable().destroy();
-               }
-       
-               // ✅ Initialize only when data exists
-               if (companyList.length > 0) {
-                 $(tableRef.current).DataTable({
-                   responsive: true,
-                   destroy: true // <-- Important, allows re-init
-                 });
-               }
-             }     
-      }, [companyList]); // Re-initialize DataTables when activities data changes
-   
-
-    function refreshCompanies() {     
-        getAllCompaniesList().then((response)=> {
-            setCompanyList(response.data)
-        }).catch((error)=>{
-             toast.error(error?.data?.errorMessage)
-        })
-    }  
-
-    function saveCompany(values){
-        setIsDisabled(true)
-        if(id == -1) {
-            let companyObject = {                 
-                comp_name : values.comp_name
-            }
-            saveCompany(companyObject).then((response) => {
-                refreshCompanies()
-                toast.success(response.data.statusMsg)
-                setCompName("")
-                setIsDisabled(false)                
-                setBtnValue("Add Company")
-                navigate(`/company/-1`)
-            }).catch((error)=>{
-                refreshCompanies()
-                toast.error(error.data.errorMessage)
-                setCompName("")
-                setIsDisabled(false)                
-                setBtnValue("Add Company")
-                navigate(`/company/-1`)
-            })
+        if (id && id !== "-1") {
+            setTitle("Update Company");
+            getCompanyById(id).then(response => {
+                setCompName(response.data.comp_name);
+            }).catch(error => {
+                toast.error("Failed to load company details");
+            });
+        } else {
+            setTitle("Add New Company");
+            setCompName("");
         }
-        else {
-            let companyObject = {
-                comp_id : id,
-                comp_name : values.comp_name
-            }
-            updateCompany(companyObject).then((response) => {
-                refreshCompanies()
-                toast.success(response.data.statusMsg)
-                setCompName("")
-                setIsDisabled(false)
-                navigate(`/company/-1`)
-            }).catch((error)=>{
-                refreshCompanies()
-                toast.error(error.data.errorMessage)
-                setCompName("")
-                setIsDisabled(false)
-                navigate(`/company/-1`)
-            })
-        }
+    }, [id]);
+
+    function handleSubmit(values, { resetForm }) {
+        setIsDisabled(true);
+        const companyObject = {
+            comp_name: values.comp_name
+        };
+
+        const apiCall = id === "-1" 
+            ? saveCompanyApi(companyObject) 
+            : updateCompany({ ...companyObject, comp_id: id });
+
+        apiCall.then((row) => {
+            toast.success(id === "-1" ? "Company successfully registered and added to directory!" : "Company details have been successfully updated.");
+            setIsDisabled(false);
+            if (id === "-1") resetForm();
+            navigate('/viewcompanies');
+        }).catch((error) => {
+            toast.error(error.response?.data?.errorMessage || "An unexpected error occurred while saving the company.");
+            setIsDisabled(false);
+        });
     }
 
     function validate(values) {
-        let errors = { }
-        if(values.comp_name.length<2){
-              errors.comp_name = "Company Name must have 2 or more characters"
+        let errors = {};
+        if (!values.comp_name) {
+            errors.comp_name = "Company name is required";
+        } else if (values.comp_name.length < 2) {
+            errors.comp_name = "Company name must be at least 2 characters";
         }
-        return errors
+        return errors;
     }
 
-    return(
-        <Box sx={{ width: "100%", maxWidth: 1000, mx: "auto", p: 2 }}>
-             
-            <Typography variant="h4">{btnValue}</Typography>
-            <Formik
-                initialValues={{ comp_name}}
-                enableReinitialize={true}
-                validateOnBlur={false}
-                validateOnChange={false}                
-                onSubmit={saveCompany}
-                validate={validate}
+    return (
+        <Box sx={{ p: { xs: 2, md: 4 }, display: 'flex', justifyContent: 'center' }} className="fade-in">
+            <Card 
+                sx={{ 
+                    width: '100%', 
+                    maxWidth: 600, 
+                    borderRadius: 4, 
+                    boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
+                    overflow: 'visible'
+                }}
             >
-                {
-                    (props) => (
-                        <Form>
-                            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                                <TextField
-                                    variant="standard"
-                                    id="comp_name"
-                                    name="comp_name"
-                                    value={props.values.comp_name}
-                                    onBlur={props.handleBlur}
-                                    onChange={props.handleChange}
-                                    error={props.touched.comp_name && Boolean(props.errors.comp_name)}
-                                    helperText={<ErrorMessage name="comp_name" />}
-                                    placeholder="Enter Company Name"
-                                    fullWidth
-                                    autoFocus={true}
-                                >
-                                </TextField>
-                                
-                                    <Box sx={{ display: "flex", justifyContent: "flex-start"}}>
-                                           <Button
-                                             type="submit"
-                                             variant="contained"
-                                             color="primary"
-                                             disabled={isDisabled}
-                                              startIcon= {
-                                                             isDisabled ? <CircularProgress size={20} color="teal" /> : null
-                                                             }  
-                                           >
-                                             {btnValue}
-                                           </Button>
-                                           </Box>
-                            </Box>
-                        </Form>
-                    )
-                }
-            </Formik>
-             
-             <Box>
-                     <Typography variant="h4" gutterBottom >View Companies </Typography>
-                     <table ref={tableRef} className="table table-striped table-hover  " width="100%">
-                     <thead>
-                         <tr>
-                             <th>Sr</th>
-                             <th>Company Name</th>
-                             <th>Action</th>
-                         </tr>
-                     </thead>
-                     <tbody>
-                     {
-                         companyList.map((company,index)=>(
-                             <tr key={company.comp_id}>
-                                 <td>{index+1}</td>
-                                 <td>{company.comp_name}</td>
-                                 <td><Button variant="contained" color='success' onClick={()=>navigate(`/company/${company.comp_id}`)}><EditIcon />Update</Button> </td>
-                             </tr>
-                         ))
-                     }
-                     </tbody>
-                </table>
-            </Box>
-        </Box> 
-    )
-}
+                <Box 
+                    sx={{ 
+                        p: 3, 
+                        background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+                        color: 'white',
+                        borderRadius: '16px 16px 0 0',
+                        position: 'relative'
+                    }}
+                >
+                    <IconButton 
+                        onClick={() => navigate('/viewcompanies')} 
+                        sx={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'white' }}
+                    >
+                        <ArrowBackIcon />
+                    </IconButton>
+                    <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
+                        <BusinessIcon sx={{ fontSize: 32 }} />
+                        <Typography variant="h5" fontWeight="bold">
+                            {title}
+                        </Typography>
+                    </Stack>
+                </Box>
+
+                <CardContent sx={{ p: 4 }}>
+                    <Formik
+                        initialValues={{ comp_name }}
+                        enableReinitialize={true}
+                        onSubmit={handleSubmit}
+                        validate={validate}
+                    >
+                        {(props) => (
+                            <Form>
+                                <Stack spacing={4}>
+                                    <Box>
+                                        <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, fontWeight: 'bold' }}>
+                                            Company Details
+                                        </Typography>
+                                        <TextField
+                                            fullWidth
+                                            id="comp_name"
+                                            name="comp_name"
+                                            label="Company Name"
+                                            placeholder="e.g. Acme Corporation"
+                                            value={props.values.comp_name}
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            error={props.touched.comp_name && Boolean(props.errors.comp_name)}
+                                            helperText={props.touched.comp_name && props.errors.comp_name}
+                                            variant="outlined"
+                                            InputProps={{
+                                                sx: { borderRadius: 2 }
+                                            }}
+                                        />
+                                    </Box>
+
+                                    <Divider />
+
+                                    <Stack direction="row" spacing={2} justifyContent="flex-end">
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => navigate('/viewcompanies')}
+                                            sx={{ borderRadius: 2, px: 3, textTransform: 'none' }}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            disabled={isDisabled || !props.dirty}
+                                            startIcon={isDisabled ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
+                                            sx={{ 
+                                                borderRadius: 2, 
+                                                px: 4, 
+                                                textTransform: 'none',
+                                                fontWeight: 'bold',
+                                                boxShadow: 4
+                                            }}
+                                        >
+                                            {isDisabled ? "Saving..." : id === "-1" ? "Register Company" : "Update Profile"}
+                                        </Button>
+                                    </Stack>
+                                </Stack>
+                            </Form>
+                        )}
+                    </Formik>
+                </CardContent>
+            </Card>
+        </Box>
+    );
+}

@@ -62,7 +62,7 @@ const respInterceptor = apiClient.interceptors.response.use(
 
     // 🔐 Token expired / unauthorized for protected APIs
     if (error.response?.status === 401) {
-      showToast("Session expired. Please login again.","error");
+      showToast("Authentication required. Please login again to continue.", "error");
 
        // Optional: clear auth data
       // localStorage.removeItem("token");
@@ -79,7 +79,7 @@ const respInterceptor = apiClient.interceptors.response.use(
 
     // 🌐 Backend down
     if (!error.response) {
-      showToast("Server unavailable","error");
+      showToast("Server unavailable. Please check your network connection.", "error");
       return Promise.reject(error);
     }
      
@@ -133,36 +133,29 @@ const respInterceptor = apiClient.interceptors.response.use(
         catch(error) {
            // 🚨 Wrong password or unauthorized
             if (error.response && error.response.status === 401) {
-              showToast(error.response.data.message || "Invalid username or password","error");
-               setAuthenticated(false)
-                setUserId('')
-                setJwtToken(null)
-                setUsername('')
-
-                sessionStorage.clear()
-                localStorage.clear()
+              showToast("Invalid credentials. Please verify your username and password.", "error");
             }
             // 🚨 Backend down
             else {
-              showToast("Server unavailable. Please try again later.","error");
+              showToast("Server is currently unreachable. Please try again later.", "error");
             }
-             setAuthenticated(false)
-             setUserId('')
-             setJwtToken(null)
-             setUsername('')
+            
+            setAuthenticated(false);
+            setUserId('');
+            setJwtToken(null);
+            setUsername('');
 
-             sessionStorage.clear()
-             localStorage.clear()
-            return false
+            sessionStorage.clear();
+            localStorage.clear();
+            return false;
         }
-        
     }
 
    async function logout()
     {      
         const result = await logoutFunction(jwtToken)
 
-        showToast(result.data.message,"success")
+        showToast("Logout successful. See you soon!", "success");
 
         setAuthenticated(false)
         setUserId('')

@@ -1,5 +1,4 @@
-import   { useState } from "react";
-
+import { useState } from "react";
 import {
   Box,
   Drawer,
@@ -8,13 +7,18 @@ import {
   Typography,
   IconButton,
   List,
-  ListItem,
-  ListItemIcon,
   ListItemText,
   CssBaseline,
-  ListItemButton
+  ListItemButton,
+  ListItemIcon,
+  Avatar,
+  Tooltip,
+  useTheme,
+  alpha,
+  Divider,
+  Badge
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -26,142 +30,211 @@ import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import CategoryIcon from '@mui/icons-material/Category';
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import { useAuth } from "../Security/authContext"; 
 
-const drawerWidth = 200;
+const drawerWidth = 260; // Increased for better readability
 
 function DashboardLayout({ children }) {
-
   const [mobileOpen, setMobileOpen] = useState(false);
- 
-  const navigate = useNavigate()
-
-  const authContext = useAuth()
+  const navigate = useNavigate();
+  const location = useLocation();
+  const theme = useTheme();
+  const authContext = useAuth();
   
-    function logout()
-    {
-        authContext.logout()
-    }
+  function logout() {
+    authContext.logout();
+  }
 
-    const handleDrawerToggle = () => {
-      setMobileOpen(!mobileOpen);
-    };
-   
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const navItems = [
+    { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
+    { text: "Company", icon: <BusinessIcon />, path: "/company/-1" },
+    { text: "Department", icon: <CorporateFareIcon />, path: "/viewdepartments" },
+    { text: "Asset Type", icon: <CategoryIcon />, path: "/assettype/-1" },
+    { text: "Assets", icon: <DevicesIcon />, path: "/asset/-1" },
+    { text: "Designation", icon: <LocalPostOfficeIcon />, path: "/designation/-1" },
+    { text: "Employees", icon: <Groups3Icon />, path: "/viewemployees" },
+    { text: "Assigned Assets", icon: <AssignmentTurnedInIcon />, path: "/viewassignedassets" },
+  ];
+
   const drawer = (
-    <div>
-      <Toolbar />
-      <List>
+    <Box sx={{ 
+      height: '100%', 
+      background: 'linear-gradient(180deg, #111827 0%, #1f2937 100%)',
+      color: 'white',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      <Box sx={{ p: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Avatar 
+          sx={{ 
+            bgcolor: theme.palette.primary.main, 
+            width: 40, 
+            height: 40,
+            boxShadow: '0 0 20px rgba(37, 99, 235, 0.4)'
+          }}
+        >
+          AMS
+        </Avatar>
+        <Typography variant="h6" fontWeight="bold" sx={{ letterSpacing: 1 }}>
+          AMS Pro
+        </Typography>
+      </Box>
+      <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)', mb: 2 }} />
+      
+      <List sx={{ px: 2, flexGrow: 1 }}>
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path || 
+                          (item.path !== '/' && location.pathname.startsWith(item.path.split('/')[1]));
+          
+          return (
+            <ListItemButton 
+              key={item.text}
+              onClick={() => navigate(item.path)}
+              sx={{
+                borderRadius: '12px',
+                mb: 1,
+                py: 1.2,
+                transition: 'all 0.3s',
+                backgroundColor: isActive ? alpha(theme.palette.primary.main, 0.15) : 'transparent',
+                color: isActive ? theme.palette.primary.light : 'rgba(255,255,255,0.7)',
+                position: 'relative',
+                overflow: 'hidden',
+                '&:hover': {
+                  backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                  color: 'white',
+                  transform: 'translateX(4px)'
+                },
+                '&::after': isActive ? {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  top: '20%',
+                  height: '60%',
+                  width: '4px',
+                  backgroundColor: theme.palette.primary.main,
+                  borderRadius: '0 4px 4px 0',
+                  boxShadow: '0 0 10px rgba(37, 99, 235, 0.8)'
+                } : {}
+              }}
+            >
+              <ListItemIcon sx={{ 
+                color: isActive ? theme.palette.primary.light : 'inherit',
+                minWidth: 40 
+              }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText 
+                primary={item.text} 
+                primaryTypographyProps={{ 
+                  fontSize: '0.9rem', 
+                  fontWeight: isActive ? 'bold' : 'medium' 
+                }} 
+              />
+            </ListItemButton>
+          );
+        })}
+      </List>
 
-        <ListItemButton button onClick={()=>navigate(`/`)}>
-          <ListItemIcon>
-           <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard"  ></ListItemText>
-        </ListItemButton>
-
-         <ListItemButton button onClick={()=>navigate(`/company/-1`)}>
-          <ListItemIcon>
-            <BusinessIcon />
-          </ListItemIcon>
-          <ListItemText primary="Company" />
-        </ListItemButton>
-
-        <ListItemButton button onClick={()=>navigate(`/viewdepartments`)}>
-          <ListItemIcon>
-          <CorporateFareIcon />
-          </ListItemIcon>
-          <ListItemText primary="Department" />
-        </ListItemButton>
-
-        <ListItemButton button onClick={()=>navigate(`/assettype/-1`)}>
-          <ListItemIcon>
-            <CategoryIcon />
-          </ListItemIcon>
-          <ListItemText primary="Asset Type" />
-        </ListItemButton>
-
-        <ListItemButton button onClick={()=>navigate(`/asset/-1`)}>
-          <ListItemIcon>
-             <DevicesIcon />
-          </ListItemIcon>
-          <ListItemText primary="Assets" />
-        </ListItemButton>
-
-        <ListItemButton button onClick={()=>navigate(`/designation/-1`)}>
-          <ListItemIcon>
-            <LocalPostOfficeIcon />
-          </ListItemIcon>
-          <ListItemText primary="Designation" />
-        </ListItemButton>
-
-         <ListItemButton button onClick={()=>navigate(`/viewemployees`)}>
-          <ListItemIcon>
-            <Groups3Icon />
-          </ListItemIcon>
-          <ListItemText primary="Employees" />
-        </ListItemButton>
-
-        <ListItemButton button onClick={()=>navigate(`/viewassignedassets`)}>
-          <ListItemIcon>
-            <AssignmentTurnedInIcon />
-          </ListItemIcon>
-          <ListItemText primary="Assigned Assets" />
-        </ListItemButton>
-
-        <ListItemButton button onClick={logout}>
-          <ListItemIcon>            
+      <Box sx={{ p: 2, mt: 'auto' }}>
+        <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)', mb: 2 }} />
+        <ListItemButton 
+          onClick={logout}
+          sx={{
+            borderRadius: '12px',
+            color: '#ef4444',
+            '&:hover': { bgcolor: alpha('#ef4444', 0.1) }
+          }}
+        >
+          <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>            
             <LogoutIcon />
           </ListItemIcon>
-          <ListItemText primary="Logout" />
+          <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 'bold' }} />
         </ListItemButton>
-
-      </List>
-    </div>
+      </Box>
+    </Box>
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
-
+    <Box sx={{ display: "flex", bgcolor: '#f8fafc', minHeight: '100vh' }}>
       <CssBaseline />
 
-      {/* Top Navbar */}
-
-        <AppBar
+      {/* Glassmorphism Top Navbar */}
+      <AppBar
         position="fixed"
+        elevation={0}
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-         
+          background: alpha('#ffffff', 0.8),
+          backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid',
+          borderColor: alpha(theme.palette.divider, 0.1),
+          color: theme.palette.text.primary
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton
+              color="inherit"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: "none" } }}
+            >
+              <MenuIcon /> 
+            </IconButton>
+            <Typography variant="subtitle1" fontWeight="600" color="text.secondary">
+              Welcome back, Administrator
+            </Typography>
+          </Box>
 
-          <IconButton
-            color="inherit"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
-          >
-            <MenuIcon /> 
-          </IconButton>
-
-          <Typography variant="h6" noWrap>
-            Asset Management System
-          </Typography>
-
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Tooltip title="Notifications">
+              <IconButton size="small">
+                <Badge variant="dot" color="error">
+                  <NotificationsIcon sx={{ color: 'text.secondary' }} />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Settings">
+              <IconButton size="small">
+                <SettingsIcon sx={{ color: 'text.secondary' }} />
+              </IconButton>
+            </Tooltip>
+            <Divider orientation="vertical" flexItem sx={{ mx: 1, my: 1.5 }} />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 1 }}>
+              <Box sx={{ textAlign: 'right', display: { xs: 'none', md: 'block' } }}>
+                <Typography variant="body2" fontWeight="bold">Admin User</Typography>
+                <Typography variant="caption" color="text.secondary">Super Admin</Typography>
+              </Box>
+              <Avatar 
+                sx={{ 
+                  width: 35, 
+                  height: 35, 
+                  bgcolor: theme.palette.primary.main,
+                  fontSize: '0.9rem',
+                  fontWeight: 'bold',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                }}
+              >
+                AD
+              </Avatar>
+            </Box>
+          </Box>
         </Toolbar>
       </AppBar> 
 
-      {/* Sidebar */}
-
+      {/* Sidebar Navigation */}
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
       >
-
-        {/* Mobile Drawer */}
-
         <Drawer
           variant="temporary"
           open={mobileOpen}
@@ -171,14 +244,13 @@ function DashboardLayout({ children }) {
             display: { xs: "block", sm: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: drawerWidth
+              width: drawerWidth,
+              border: 'none'
             }
           }}
         >
           {drawer}
         </Drawer>
-
-        {/* Desktop Drawer */}
 
         <Drawer
           variant="permanent"
@@ -186,35 +258,42 @@ function DashboardLayout({ children }) {
             display: { xs: "none", sm: "block" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: drawerWidth
+              width: drawerWidth,
+              border: 'none',
+              boxShadow: '4px 0 24px rgba(0,0,0,0.05)'
             }
           }}
           open
         >
           {drawer}
         </Drawer>
-
       </Box>
 
-      {/* Main Content */}
-
+      {/* Main Content Area */}
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` }
+          p: { xs: 2, md: 3 },
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column'
         }}
       >
-
-        <Toolbar />
-
-        {children}
-
+        <Toolbar /> {/* Spacer for fixed header */}
+        <Box sx={{ flexGrow: 1 }}>
+           {children}
+        </Box>
+        
+        <Box sx={{ p: 2, textAlign: 'center', mt: 'auto' }}>
+          <Typography variant="caption" color="text.secondary">
+            © 2026 Asset Management System Pro • All rights reserved
+          </Typography>
+        </Box>
       </Box>
-
     </Box>
   );
 }
 
-export default DashboardLayout;
+export default DashboardLayout;

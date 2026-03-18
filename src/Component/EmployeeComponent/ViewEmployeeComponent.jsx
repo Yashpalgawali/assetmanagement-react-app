@@ -1,80 +1,220 @@
-import $ from 'jquery'; // jQuery is required for DataTables to work
-import 'datatables.net-dt/css/dataTables.dataTables.css'; // DataTables CSS styles
-import 'datatables.net'; // DataTables core functionality
-
-import { Button, Typography } from "@mui/material";
+import { 
+    Avatar, 
+    Box, 
+    Button, 
+    Card, 
+    IconButton, 
+    InputAdornment, 
+    Paper, 
+    Stack, 
+    Table, 
+    TableBody, 
+    TableCell, 
+    TableContainer, 
+    TableHead, 
+    TableRow, 
+    TextField, 
+    Tooltip, 
+    Typography,
+    useTheme,
+    alpha
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getAllEmployeesList } from "../../api/EmployeeApiClient";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+import PersonIcon from '@mui/icons-material/Person';
 
 export default function ViewEmployeeComponent() {
- 
-    const navigate = useNavigate()
-    const [empList , setEmpList] = useState([])
-    const [deptList , setDeptList] = useState([])
-
-    const tableRef= useRef(null)
+    const theme = useTheme();
+    const navigate = useNavigate();
+    const [empList, setEmpList] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         getAllEmployeesList().then((response) => {
-            setEmpList(response.data)
-        }).catch((error) => {    
-            console.log('Error while fetching Employees List ',error)
-        })
-    }, [])
+            setEmpList(response.data);
+        }).catch((error) => {
+            console.log('Error while fetching Employees List ', error);
+        });
+    }, []);
 
-    useEffect(()=> {
-        if(tableRef.current && empList.length>0) {
-            $(tableRef.current).DataTable();
-        }
-    },[empList])
+    const filteredEmployees = empList.filter(emp => 
+        emp.emp_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        emp.emp_email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        emp.department.dept_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        emp.emp_code?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
-    return(
-        <div className="container">
-            <Typography variant="h4" gutterBottom>
-                View Employees  <Button variant="contained" color="primary" style={{float : 'right'}} onClick={() => navigate(`/employee/-1`)}>Add Employee</Button>
-            </Typography>
-            <table ref={tableRef} className="table table-striped table-hover">
-                <thead>
-                    <tr>
-                    <th>Sr </th>
-                    <th>Employee Name</th>
-                    <th>Contact</th>
-                    <th>Email</th>
-                    <th>Designation</th>
-                    <th>Department</th>
-                    <th>Company</th>
-                    <th>Actions</th>
-                    </tr>
-                </thead>    
-                <tbody>
-                {
-                    empList && empList.map((emp, index) => (
-                        <tr key={emp.emp_id}>
-                            <td>{index + 1}</td>
-                            <td>{emp.emp_name}</td>
-                            <td>{emp.emp_contact}</td>
-                            <td>{emp.emp_email}</td>
-                            <td>{emp.designation.desig_name}</td>
-                            <td>{emp.department.dept_name}</td>
-                            <td>{emp.department.company.comp_name}</td>
-                            <td style={{  }} >
-                                <Button variant="contained" color="success" onClick={() => navigate(`/employee/${emp.emp_id}`)}><EditIcon /> Edit</Button>
+    return (
+        <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1400px', margin: '0 auto' }}>
+            {/* Header Section */}
+            <Paper 
+                elevation={0} 
+                sx={{ 
+                    p: 3, 
+                    mb: 4, 
+                    borderRadius: 4, 
+                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+                    color: 'white',
+                    display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    alignItems: { xs: 'flex-start', sm: 'center' },
+                    justifyContent: 'space-between',
+                    gap: 2,
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+                }}
+            >
+                <Box>
+                    <Typography variant="h4" fontWeight="bold" gutterBottom>
+                        Employee Directory
+                    </Typography>
+                    <Typography variant="subtitle1" sx={{ opacity: 0.8 }}>
+                        Manage and track your company's talent effortlessly
+                    </Typography>
+                </Box>
+                <Button 
+                    variant="contained" 
+                    color="secondary" 
+                    startIcon={<AddIcon />}
+                    onClick={() => navigate(`/employee/-1`)}
+                    sx={{ 
+                        borderRadius: 3, 
+                        px: 3, 
+                        py: 1.5,
+                        textTransform: 'none',
+                        fontWeight: 'bold',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                        '&:hover': {
+                            transform: 'translateY(-2px)',
+                            boxShadow: '0 6px 16px rgba(0,0,0,0.3)'
+                        },
+                        transition: 'all 0.3s'
+                    }}
+                >
+                    Add Employee
+                </Button>
+            </Paper>
 
-                                <Button variant="contained" color="secondary" onClick={() => navigate(`/viewassignedassets/${emp.emp_id}`)}><VisibilityIcon /> View</Button>
-                                
-                            </td>
-                        </tr>
-                     )
-                )}
-                </tbody>
-                
-            </table>             
-        </div>
-    
-       
-    )
-} 
+            {/* toolbar Section */}
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 3 }}>
+                <TextField
+                    fullWidth
+                    variant="outlined"
+                    placeholder="Search by name, email, department..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    slotProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon color="action" />
+                            </InputAdornment>
+                        ),
+                        sx: { borderRadius: 3, bgcolor: 'background.paper' }
+                    }}
+                />
+            </Stack>
+
+            {/* Table Section */}
+            <TableContainer component={Paper} sx={{ borderRadius: 4, overflow: 'hidden', boxShadow: theme.shadows[4] }}>
+                <Table sx={{ minWidth: 800 }}>
+                    <TableHead sx={{ bgcolor: alpha(theme.palette.primary.main, 0.05) }}>
+                        <TableRow>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Employee</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Contact</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Designation</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Department</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Company</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {filteredEmployees.length > 0 ? (
+                            filteredEmployees.map((emp) => (
+                                <TableRow 
+                                    key={emp.emp_id}
+                                    sx={{ 
+                                        '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.02) },
+                                        transition: 'background-color 0.2s'
+                                    }}
+                                >
+                                    <TableCell>
+                                        <Stack direction="row" spacing={2} alignItems="center">
+                                            <Avatar 
+                                                sx={{ 
+                                                    bgcolor: theme.palette.primary.light,
+                                                    width: 40,
+                                                    height: 40
+                                                }}
+                                            >
+                                                {emp.emp_name.charAt(0)}
+                                            </Avatar>
+                                            <Box>
+                                                <Typography variant="subtitle2" fontWeight="bold">
+                                                    {emp.emp_name}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {emp.emp_email}
+                                                </Typography>
+                                            </Box>
+                                        </Stack>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="body2">{emp.emp_contact}</Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="body2">{emp.designation.desig_name}</Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="body2" sx={{ bgcolor: alpha(theme.palette.info.main, 0.1), color: 'info.main', px: 1, py: 0.5, borderRadius: 1, display: 'inline-block' }}>
+                                            {emp.department.dept_name}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="body2" fontWeight="medium">{emp.department.company.comp_name}</Typography>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <Stack direction="row" spacing={1} justifyContent="center">
+                                            <Tooltip title="Edit Employee">
+                                                <IconButton 
+                                                    color="primary" 
+                                                    onClick={() => navigate(`/employee/${emp.emp_id}`)}
+                                                    sx={{ bgcolor: alpha(theme.palette.primary.main, 0.1), '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2) } }}
+                                                >
+                                                    <EditIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="View Assets">
+                                                <IconButton 
+                                                    color="secondary" 
+                                                    onClick={() => navigate(`/viewassignedassets/${emp.emp_id}`)}
+                                                    sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.1), '&:hover': { bgcolor: alpha(theme.palette.secondary.main, 0.2) } }}
+                                                >
+                                                    <VisibilityIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Stack>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={6} align="center" sx={{ py: 10 }}>
+                                    <Box sx={{ opacity: 0.5 }}>
+                                        <PersonIcon sx={{ fontSize: 64, mb: 1, color: 'text.disabled' }} />
+                                        <Typography variant="h6">No employees found</Typography>
+                                        <Typography variant="body2">Try adjusting your search criteria</Typography>
+                                    </Box>
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Box>
+    );
+}

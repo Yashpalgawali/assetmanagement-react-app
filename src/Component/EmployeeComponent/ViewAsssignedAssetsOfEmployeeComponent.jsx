@@ -1,117 +1,241 @@
-import $ from 'jquery'; // jQuery is required for DataTables to work
-import 'datatables.net-dt/css/dataTables.dataTables.css'; // DataTables CSS styles
-import 'datatables.net'; // DataTables core functionality
+import { 
+  Avatar, 
+  Box, 
+  Card, 
+  CardContent, 
+  Grid, 
+  Typography, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableHead, 
+  TableRow, 
+  Paper, 
+  Stack, 
+  IconButton, 
+  Tooltip,
+  alpha,
+  useTheme,
+  Button,
+  Divider,
+  Chip
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { getAllAssignedAssetsByEmpId } from "../../api/EmployeeApiClient";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import EmailIcon from '@mui/icons-material/Email';
+import BusinessIcon from '@mui/icons-material/Business';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import BadgeIcon from '@mui/icons-material/Badge';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+import AOS from "aos";
+import "aos/dist/aos.css";
 
-import { Avatar, Box, Card, CardContent, Grid, Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getAllAssignedAssets, getAllAssignedAssetsByEmpId } from "../../api/EmployeeApiClient";
-
-export default function ViewAsssignedAssetsOfEmployeeComponent(){
-    
-    const [assignedAssetsList,setAssignedAssetsList] = useState([])
-    const [employee,setEmployee] = useState({
-        emp_name : '',
-        designation : {
-            desig_name : ''
-        },
-        department : {
-            dept_name : '',
-            company : {
-                comp_name : ''
-            }
-        }
-    })
-    
-    const tableRef= useRef(null)
-
-    const {id} = useParams()
+export default function ViewAsssignedAssetsOfEmployeeComponent() {
+    const [assignedAssetsList, setAssignedAssetsList] = useState([]);
+    const [employee, setEmployee] = useState(null);
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const theme = useTheme();
 
     useEffect(() => { 
-
+        AOS.init({ duration: 800, once: true });
         getAllAssignedAssetsByEmpId(id).then((response) => {
-            setAssignedAssetsList(response.data)
-            setEmployee(response.data[0].employee)
-            console.log(response.data[0].employee)
-        })
+            if (response.data && response.data.length > 0) {
+                setAssignedAssetsList(response.data);
+                setEmployee(response.data[0].employee);
+            }
+        });
+    }, [id]);
 
-    },[id])
+    if (!employee) {
+        return (
+            <Box sx={{ p: 4, textAlign: 'center' }}>
+                <Typography variant="h6" color="text.secondary">No records found for this employee.</Typography>
+                <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/viewemployees')} sx={{ mt: 2 }}>
+                    Go Back to Employees
+                </Button>
+            </Box>
+        );
+    }
 
-    useEffect(()=> {
-        if(tableRef.current && assignedAssetsList.length>0) {
-            $(tableRef.current).DataTable();
-        }
-    },[assignedAssetsList])
+    return (
+        <Box sx={{ p: { xs: 2, md: 4 } }}>
+            {/* Navigation & Header */}
+            <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 4 }}>
+                <IconButton 
+                    onClick={() => navigate('/viewemployees')}
+                    sx={{ 
+                        bgcolor: 'background.paper', 
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                        '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) }
+                    }}
+                >
+                    <ArrowBackIcon />
+                </IconButton>
+                <Box>
+                    <Typography variant="h4" fontWeight="800">Assignee Profile</Typography>
+                    <Typography variant="body2" color="text.secondary">Detailed view of assets assigned to this employee</Typography>
+                </Box>
+            </Stack>
 
-    return(
-        <Box sx={{ p: 2, boxShadow: 3 }}>
-            <Typography variant="h4" gutterBottom>View Assigned Assets</Typography>
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
-      <Card sx={{ width: 400, p: 2, boxShadow: 3 }}>
-        <CardContent>
+            <Grid container spacing={4}>
+                {/* Employee Profile Card */}
+                <Grid item xs={12} lg={4}>
+                    <Card 
+                        data-aos="fade-right"
+                        sx={{ 
+                            borderRadius: 5, 
+                            border: '1px solid',
+                            borderColor: alpha(theme.palette.divider, 0.1),
+                            boxShadow: '0 12px 40px rgba(0,0,0,0.04)',
+                            overflow: 'hidden',
+                            position: 'sticky',
+                            top: 100
+                        }}
+                    >
+                        <Box sx={{ height: 100, background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})` }} />
+                        <CardContent sx={{ pt: 0, px: 3, pb: 2 }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: -6 }}>
+                                <Avatar 
+                                    sx={{ 
+                                        width: 100, 
+                                        height: 100, 
+                                        border: '4px solid white', 
+                                        boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+                                        bgcolor: theme.palette.primary.main,
+                                        fontSize: '2rem',
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    {employee.emp_name.charAt(0)}
+                                </Avatar>
+                                <Typography variant="h5" fontWeight="bold" sx={{ mt: 2 }}>
+                                    {employee.emp_name}
+                                </Typography>
+                                <Chip 
+                                    label={employee.designation.desig_name} 
+                                    size="small" 
+                                    color="primary" 
+                                    variant="outlined"
+                                    sx={{ mt: 1, fontWeight: 'bold' }}
+                                />
+                            </Box>
 
-          <Grid container spacing={2} alignItems="center">
+                            <Stack spacing={2.5} sx={{ mt: 4 }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <Avatar sx={{ bgcolor: alpha(theme.palette.primary.main, 0.08), color: theme.palette.primary.main, width: 36, height: 36 }}>
+                                        <EmailIcon fontSize="small" />
+                                    </Avatar>
+                                    <Box>
+                                        <Typography variant="caption" color="text.secondary">Email Address</Typography>
+                                        <Typography variant="body2" fontWeight="600">{employee.emp_email}</Typography>
+                                    </Box>
+                                </Box>
 
-            <Grid item>
-              <Avatar sx={{ width: 60, height: 60 }}>
-                {employee.emp_name.charAt(0)}
-              </Avatar>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <Avatar sx={{ bgcolor: alpha(theme.palette.primary.main, 0.08), color: theme.palette.primary.main, width: 36, height: 36 }}>
+                                        <CorporateFareIcon fontSize="small" />
+                                    </Avatar>
+                                    <Box>
+                                        <Typography variant="caption" color="text.secondary">Department</Typography>
+                                        <Typography variant="body2" fontWeight="600">{employee.department.dept_name}</Typography>
+                                    </Box>
+                                </Box>
+
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <Avatar sx={{ bgcolor: alpha(theme.palette.primary.main, 0.08), color: theme.palette.primary.main, width: 36, height: 36 }}>
+                                        <BusinessIcon fontSize="small" />
+                                    </Avatar>
+                                    <Box>
+                                        <Typography variant="caption" color="text.secondary">Company</Typography>
+                                        <Typography variant="body2" fontWeight="600">{employee.department.company.comp_name}</Typography>
+                                    </Box>
+                                </Box>
+
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <Avatar sx={{ bgcolor: alpha(theme.palette.primary.main, 0.08), color: theme.palette.primary.main, width: 36, height: 36 }}>
+                                        <BadgeIcon fontSize="small" />
+                                    </Avatar>
+                                    <Box>
+                                        <Typography variant="caption" color="text.secondary">Employee ID</Typography>
+                                        <Typography variant="body2" fontWeight="600">EMP-00{employee.id}</Typography>
+                                    </Box>
+                                </Box>
+                            </Stack>
+                            <Divider sx={{ my: 3 }} />
+                            <Box sx={{ textAlign: 'center', pb: 2 }}>
+                                <Typography variant="h4" fontWeight="800" color="primary">{assignedAssetsList.length}</Typography>
+                                <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 1 }}>Assets Assigned</Typography>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                {/* Asset List Section */}
+                <Grid item xs={12} lg={8}>
+                    <Paper 
+                        data-aos="fade-left"
+                        sx={{ 
+                            borderRadius: 5, 
+                            border: '1px solid', 
+                            borderColor: alpha(theme.palette.divider, 0.1),
+                            overflow: 'hidden',
+                            boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
+                        }}
+                    >
+                        <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: alpha(theme.palette.divider, 0.05), bgcolor: alpha(theme.palette.primary.main, 0.01) }}>
+                            <Stack direction="row" spacing={1.5} alignItems="center">
+                                <Inventory2Icon color="primary" />
+                                <Typography variant="h6" fontWeight="bold">Assigned Hardware & Software</Typography>
+                            </Stack>
+                        </Box>
+
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow sx={{ bgcolor: alpha(theme.palette.primary.main, 0.01) }}>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>#</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Asset Category</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Item Details</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Allocation Date</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {assignedAssetsList.map((asset, index) => (
+                                        <TableRow key={asset.asset_id} hover sx={{ transition: '0.2s' }}>
+                                            <TableCell sx={{ color: 'text.secondary' }}>{index + 1}</TableCell>
+                                            <TableCell>
+                                                <Chip 
+                                                    label={asset.asset.atype.type_name} 
+                                                    size="small" 
+                                                    variant="soft" 
+                                                    color="primary"
+                                                    sx={{ fontWeight: 'bold' }}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Box>
+                                                    <Typography variant="body2" fontWeight="bold">{asset.asset.asset_name}</Typography>
+                                                    <Typography variant="caption" color="text.secondary">Model: {asset.asset.model_number}</Typography>
+                                                </Box>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Box>
+                                                    <Typography variant="body2">{asset.assign_date}</Typography>
+                                                    <Typography variant="caption" color="text.secondary">{asset.assign_time}</Typography>
+                                                </Box>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
+                </Grid>
             </Grid>
-
-            <Grid item xs>
-              <Typography variant="h6">
-                {employee.emp_name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {employee.designation.desig_name}
-              </Typography>
-            </Grid>
-
-          </Grid>
-
-          <Box mt={2}>
-            <Typography variant="body2">
-              <strong>Department:</strong> {employee.department.dept_name}
-            </Typography>
-
-            <Typography variant="body2">
-              <strong>Email:</strong> {employee.emp_email}
-            </Typography>
-
-            <Typography variant="body2">
-              <strong>Company:</strong> {employee.department.company.comp_name}
-            </Typography>
-          </Box>
-
-        </CardContent>
-      </Card>
-    </Box>
-            <table ref={tableRef} className="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Sr</th>                         
-                        <th>Asset Type</th>
-                        <th>Asset Name</th>
-                        <th>Model Number</th>
-                        <th>Assigned Date</th>
-                        <th>Assigned Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    { assignedAssetsList.map((asset,index)=> (
-                        <tr key={asset.asset_id}>
-                        <td>{index+1}</td>                       
-                        <td>{asset.asset.atype.type_name}</td>
-                        <td>{asset.asset.asset_name}</td>
-                        <td>{asset.asset.model_number}</td>
-                        <td>{asset.assign_date}</td>
-                        <td>{asset.assign_time}</td>
-                    </tr>
-                    ))
-                    }
-                </tbody>
-                    
-            </table>
         </Box>
-    )
-}
+    );
+}
